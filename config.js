@@ -48,7 +48,7 @@ module.exports = {
 
   // Note that the number of bots needs to be either 0 or a multiple of the number of
   // worker processes or else it will get rounded up/down.
-  BOT_COUNT: 10,
+  BOT_COUNT: 3,
   BOT_MOVE_SPEED: 5,
   BOT_MASS: 10,
   BOT_DEFAULT_DIAMETER: 45,

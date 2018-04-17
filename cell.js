@@ -262,6 +262,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
       var movementVector = {x: 0, y: 0};
       var movedHorizontally = false;
       var movedVertically = false;
+      var attack = false;
 
       if (playerOp.u) {
         movementVector.y = -moveSpeed;
@@ -283,6 +284,10 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
         player.direction = 'left';
         movedHorizontally = true;
       }
+      // attack
+      if (playerOp.a) {
+        attack = true;
+      }
 
       if (movedHorizontally && movedVertically) {
         movementVector.x *= self.diagonalSpeedFactor;
@@ -291,6 +296,11 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
 
       player.x += movementVector.x;
       player.y += movementVector.y;
+      player.attack = attack ? "-attack" : "";
+      
+      if (attack) {
+        console.log(player)
+      }
     }
 
     if (player.playerOverlaps) {

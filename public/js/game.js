@@ -30,14 +30,16 @@ window.onload = function () {
       up: 'img/you-back.gif',
       left: 'img/you-side-left.gif',
       right: 'img/you-side-right.gif',
-      down: 'img/you-front.gif'
+      down: 'img/you-front.gif',
+      downAttack: 'img/you-front-attack.gif'
     };
 
     var othersTextures = {
       up: 'img/others-back.gif',
       left: 'img/others-side-left.gif',
       right: 'img/others-side-right.gif',
-      down: 'img/others-front.gif'
+      down: 'img/others-front.gif',
+      downAttack: 'img/others-front-attack.gif'
     };
 
     var botTextures = {
@@ -92,25 +94,29 @@ window.onload = function () {
         up: game.input.keyboard.addKey(Phaser.Keyboard.UP),
         down: game.input.keyboard.addKey(Phaser.Keyboard.DOWN),
         right: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
-        left: game.input.keyboard.addKey(Phaser.Keyboard.LEFT)
+        left: game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
+        attack: game.input.keyboard.addKey(Phaser.Keyboard.SPACE)
       };
       
       wasd = {
         up: game.input.keyboard.addKey(Phaser.Keyboard.W),
         down: game.input.keyboard.addKey(Phaser.Keyboard.S),
         right: game.input.keyboard.addKey(Phaser.Keyboard.D),
-        left: game.input.keyboard.addKey(Phaser.Keyboard.A)
+        left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+        attack: game.input.keyboard.addKey(Phaser.Keyboard.K)
       };
 
       game.load.image('background', BACKGROUND_TEXTURE);
 
       game.load.image('you-up', youTextures.up);
       game.load.image('you-down', youTextures.down);
+      game.load.image('you-down-attack', youTextures.downAttack);
       game.load.image('you-right', youTextures.right);
       game.load.image('you-left', youTextures.left);
 
       game.load.image('others-up', othersTextures.up);
       game.load.image('others-down', othersTextures.down);
+      game.load.image('others-down-attack', othersTextures.downAttack);
       game.load.image('others-right', othersTextures.right);
       game.load.image('others-left', othersTextures.left);
 
@@ -128,6 +134,8 @@ window.onload = function () {
     function handleCellData(stateList) {
       stateList.forEach(function (state) {
         if (state.type == 'player') {
+          //console.log('state');
+          //console.log(state);
           updateUser(state);
         } else if (state.type == 'coin') {
           if (state.delete) {
@@ -161,7 +169,13 @@ window.onload = function () {
       if (!user.direction) {
         user.direction = 'down';
       }
-      user.sprite.loadTexture(user.texturePrefix + '-' + user.direction);
+      
+      if (!user.attack) {
+        user.attack = '';
+        //console.log("sem attack");
+      }
+      
+      user.sprite.loadTexture(user.texturePrefix + '-' + user.direction + user.attack);
 
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
     }
@@ -200,6 +214,12 @@ window.onload = function () {
       user.id = userData.id;
       user.swid = userData.swid;
       user.name = userData.name;
+      if (userData.attack) {
+        console.log(userData.attack)
+        user.attack = userData.attack;
+      } else {
+        user.attack = '';
+      }
 
       var textStyle = {
         font: '16px Arial',
@@ -273,6 +293,13 @@ window.onload = function () {
       if (user) {
         user.score = userData.score;
         user.direction = userData.direction;
+        
+        if (userData.attack) {
+          user.attack = userData.attack;
+        } else {
+          user.attack = '';
+        }
+        
         moveUser(userData.id, userData.x, userData.y);
       } else {
         createUserSprite(userData);
@@ -373,6 +400,10 @@ window.onload = function () {
       }
       if (keys.left.isDown || wasd.left.isDown) {
         playerOp.l = 1;
+        didAction = true;
+      }
+      if (keys.attack.isDown || wasd.attack.isDown) {
+        playerOp.a = 1;
         didAction = true;
       }
       if (didAction && Date.now() - lastActionTime >= USER_INPUT_INTERVAL) {

@@ -46,6 +46,8 @@ BotManager.prototype.addBot = function (options) {
   var bot = {
     id: botId,
     type: 'player',
+    // bots with heroId = 0
+    heroId: 0,
     subtype: 'bot',
     name: options.name || 'bot-' + Math.round(Math.random() * 10000),
     score: options.score || 0,

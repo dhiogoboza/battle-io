@@ -296,10 +296,10 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
 
       player.x += movementVector.x;
       player.y += movementVector.y;
-      player.attack = attack ? "-attack" : "";
+      player.attack = attack ? "Attack" : "";
       
-      if (attack) {
-        console.log(player)
+      if (player.type == 'player' && 'bot' != player.subtype) {
+        //console.log(player.type + "[" + player.name + "]: " + player.heroId)
       }
     }
 

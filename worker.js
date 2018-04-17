@@ -713,12 +713,16 @@ module.exports.run = function (worker) {
         type: 'player',
         swid: serverWorkerId,
         name: playerOptions.name,
+        // Id of hero
+        heroId: playerOptions.heroId,
         x: startingPos.x,
         y: startingPos.y,
         diam: PLAYER_DIAMETER,
         mass: PLAYER_MASS,
         score: 0
       };
+      
+      console.log(playerOptions.heroId)
 
       socket.player = stateManager.create(player);
 

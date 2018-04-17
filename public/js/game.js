@@ -26,28 +26,28 @@ window.onload = function () {
     var ENVIRONMENT;
     var SERVER_WORKER_ID;
 
-    var youTextures = {
-      up: 'img/you-back.gif',
-      left: 'img/you-side-left.gif',
-      right: 'img/you-side-right.gif',
-      down: 'img/you-front.gif',
-      downAttack: 'img/you-front-attack.gif'
-    };
-
-    var othersTextures = {
-      up: 'img/others-back.gif',
-      left: 'img/others-side-left.gif',
-      right: 'img/others-side-right.gif',
-      down: 'img/others-front.gif',
-      downAttack: 'img/others-front-attack.gif'
-    };
-
-    var botTextures = {
-      up: 'img/bot-back.gif',
-      left: 'img/bot-side-left.gif',
-      right: 'img/bot-side-right.gif',
-      down: 'img/bot-front.gif'
-    };
+    var herosTextures = [
+      { // bot 0
+        up: 'img/bot-back.gif',
+        left: 'img/bot-side-left.gif',
+        right: 'img/bot-side-right.gif',
+        down: 'img/bot-front.gif'
+      },
+      { // hero 1
+        up: 'img/you-back.gif',
+        left: 'img/you-side-left.gif',
+        right: 'img/you-side-right.gif',
+        down: 'img/you-front.gif',
+        downAttack: 'img/you-front-attack.gif'
+      },
+      { // hero 2
+        up: 'img/others-back.gif',
+        left: 'img/others-side-left.gif',
+        right: 'img/others-side-right.gif',
+        down: 'img/others-front.gif',
+        downAttack: 'img/others-front-attack.gif'
+      }
+    ];
 
     // Map the score value to the texture.
     var grassTextures = {
@@ -95,7 +95,7 @@ window.onload = function () {
         down: game.input.keyboard.addKey(Phaser.Keyboard.DOWN),
         right: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
         left: game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
-        attack: game.input.keyboard.addKey(Phaser.Keyboard.SPACE)
+        attack: game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
       };
       
       wasd = {
@@ -108,22 +108,16 @@ window.onload = function () {
 
       game.load.image('background', BACKGROUND_TEXTURE);
 
-      game.load.image('you-up', youTextures.up);
-      game.load.image('you-down', youTextures.down);
-      game.load.image('you-down-attack', youTextures.downAttack);
-      game.load.image('you-right', youTextures.right);
-      game.load.image('you-left', youTextures.left);
-
-      game.load.image('others-up', othersTextures.up);
-      game.load.image('others-down', othersTextures.down);
-      game.load.image('others-down-attack', othersTextures.downAttack);
-      game.load.image('others-right', othersTextures.right);
-      game.load.image('others-left', othersTextures.left);
-
-      game.load.image('bot-up', botTextures.up);
-      game.load.image('bot-down', botTextures.down);
-      game.load.image('bot-right', botTextures.right);
-      game.load.image('bot-left', botTextures.left);
+      var count = herosTextures.length;
+      var heroId = 0;
+      for (var i = 0; i < count; i++) {
+        for (var key in herosTextures[i]) {
+          if (herosTextures[i].hasOwnProperty(key)) {
+            game.load.image(heroId + '-' + key, herosTextures[i][key]);
+          }
+        }
+        heroId++;
+      }
 
       game.load.image('grass-1', grassTextures[1]);
       game.load.image('grass-2', grassTextures[2]);
@@ -175,7 +169,12 @@ window.onload = function () {
         //console.log("sem attack");
       }
       
-      user.sprite.loadTexture(user.texturePrefix + '-' + user.direction + user.attack);
+      if (!user.heroId) {
+        //user.heroId = 0;
+        console.log("what??");
+      }
+      
+      user.sprite.loadTexture(user.heroId + '-' + user.direction + user.attack);
 
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
     }
@@ -236,17 +235,14 @@ window.onload = function () {
         sprite = createTexturedSprite({
           texture: 'you-down'
         });
-        user.texturePrefix = 'you';
       } else if (userData.subtype == 'bot') {
         sprite = createTexturedSprite({
           texture: 'bot-down'
         });
-        user.texturePrefix = 'bot';
       } else {
         sprite = createTexturedSprite({
           texture: 'others-down'
         });
-        user.texturePrefix = 'others';
       }
 
       user.score = userData.score;
@@ -293,6 +289,7 @@ window.onload = function () {
       if (user) {
         user.score = userData.score;
         user.direction = userData.direction;
+        user.heroId = userData.heroId;
         
         if (userData.attack) {
           user.attack = userData.attack;
@@ -359,6 +356,7 @@ window.onload = function () {
       function joinWorld() {
         socket.emit('join', {
           name: playerName,
+          heroId: 1
         }, function (err, playerData) {
           playerId = playerData.id;
           updateCellWatchers(playerData, 'cell-data', handleCellData);

@@ -717,6 +717,7 @@ module.exports.run = function (worker) {
         heroId: playerOptions.heroId,
         // active hits count
         hitCount: 0,
+        attackStep: 0,
         x: startingPos.x,
         y: startingPos.y,
         diam: PLAYER_DIAMETER,

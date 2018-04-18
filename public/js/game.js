@@ -12,6 +12,7 @@ window.onload = function () {
     var game, playerId, player;
     users = {};
     coins = {};
+    hits = {};
     
     var HERO_1 = 1;
     var HERO_2 = 2;
@@ -59,6 +60,13 @@ window.onload = function () {
       3: 'img/grass-3.gif',
       4: 'img/grass-4.gif'
     };
+    
+    var swordTextures = [
+      'img/sword-down.png',
+      'img/sword-left.png',
+      'img/sword-up.png',
+      'img/sword-right.png'
+    ];
 
     // 1 means no smoothing. 0.1 is quite smooth.
     var CAMERA_SMOOTHING = 1;
@@ -126,6 +134,11 @@ window.onload = function () {
       game.load.image('grass-2', grassTextures[2]);
       game.load.image('grass-3', grassTextures[3]);
       game.load.image('grass-4', grassTextures[4]);
+      
+      game.load.image('sword-down', swordTextures[0]);
+      game.load.image('sword-left', swordTextures[1]);
+      game.load.image('sword-up', swordTextures[2]);
+      game.load.image('sword-right', swordTextures[3]);
     }
 
     function handleCellData(stateList) {
@@ -180,7 +193,7 @@ window.onload = function () {
       
       if (!user.heroId) {
         //user.heroId = 0;
-        console.log("what??");
+        //console.log("what??");
       }
       
       user.sprite.loadTexture(user.heroId + '-' + user.direction + user.attack);
@@ -223,6 +236,8 @@ window.onload = function () {
       user.swid = userData.swid;
       user.name = userData.name;
       user.heroId = userData.heroId;
+      user.attackStep = userData.attackStep || 0;
+      user.direction = "down";
       if (userData.attack) {
         user.attack = userData.attack;
       } else {
@@ -246,25 +261,25 @@ window.onload = function () {
       user.sprite.width = Math.round(userData.diam * 0.73);
       user.sprite.height = userData.diam;
       user.diam = user.sprite.width;
-      
+
       // create a group for the player's hitbox of attack
       attackHitbox = game.add.group();
       // give to the hitbox a physics body
       attackHitbox.enableBody = true;
       // make the hitbox child of the player. It will now move with the player
       user.sprite.addChild(attackHitbox);
-      
+
       switch (user.heroId) {
         case HERO_1:
           // create a "hitbox" (really just an empty sprite with a physics body)
-          var sword = attackHitbox.create(0, 0, null);
+          /*var sword = attackHitbox.create(0, 0, "sword-up");
           // set the size of the hitbox, and its position relative to the player
-          sword.body.setSize(20, 20, player.width, player.height / 2);
+          sword.body.setSize(20, 20, userData.diam / 2, userData.diam / 2);
           // add some properties to the hitbox. These can be accessed later for use in calculations
           sword.name = "sword";
           sword.rotation = 90;
           sword.knockbackDirection = 0.5;
-          sword.knockbackAmt = 600;
+          sword.knockbackAmt = 600;*/
           break;
       }
 
@@ -304,6 +319,7 @@ window.onload = function () {
         user.score = userData.score;
         user.direction = userData.direction;
         user.heroId = userData.heroId;
+        user.attackStep = userData.attackStep;
         
         if (userData.attack) {
           user.attack = userData.attack;
@@ -345,13 +361,54 @@ window.onload = function () {
         hits[hitData.id].clientProcessed = Date.now();
       } else {
         var hit = hitData;
-        hits[hitData.id] = hit;
-        hit.sprite = createTexturedSprite({
-          texture: 'grass-' + (coinData.t || '1')
-        });
-        coin.sprite.x = coinData.x;
-        coin.sprite.y = coinData.y;
-        coin.clientProcessed = Date.now();
+        var user = users[hit.playerId];
+        
+        if (user) {
+          if (!user.sword) {
+            //console.log(user);
+            /*hits[hitData.id] = hit;
+            hit.sprite = createTexturedSprite({
+              texture: 'sword-' + user.direction
+            });
+            hit.sprite.x = hitData.x;
+            hit.sprite.y = hitData.y;
+            hit.clientProcessed = Date.now();*/
+            var attackHitbox = user.sprite.getChildAt(0);
+            user.sword = attackHitbox.create(0, 0, null);
+            // set the size of the hitbox, and its position relative to the player
+            user.sword.body.setSize(0, 0, userData.diam / 2, userData.diam / 2);
+            // add some properties to the hitbox. These can be accessed later for use in calculations
+            user.sword.name = "sword"; 
+            console.log("criou");
+          }
+          
+          // update sword
+          
+          user.sword.loadTexture('sword-' + user.direction);
+          
+          user.sword.rotation = user.attackStep;
+          //user.sword.knockbackDirection = 0.5;
+          //user.sword.knockbackAmt = 600;
+          
+          switch (user.direction) {
+            case "down":
+              user.sword.y = (user.sprite.height / 2);
+              user.sword.x = -(user.sprite.width / 2);
+              break;
+            case "up":
+              user.sword.y = -user.sprite.height;
+              user.sword.x = -(user.sprite.width / 2);
+              break;
+            case "left":
+              user.sword.y = -(user.sprite.height / 2);
+              user.sword.x = -user.sprite.width;
+              break;
+            case "right":
+              user.sword.y = -(user.sprite.height / 2);
+              user.sword.x = 0;
+              break;
+          }
+        }
       }
     }
 

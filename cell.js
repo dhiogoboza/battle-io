@@ -294,16 +294,15 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         player.direction = 'left';
         movedHorizontally = true;
       }
+
       // attack
-      
-      if (player.attack_step) {
-        player.attack_step--;
+      if (player.attackStep) {
+        player.attackStep--;
       } else if (playerOp.a) {
         attack = true;
-        
-        //var hit = self.hitManager.addHit(player);
-        //hits[hit.id] = hit;
-        player.attack_step = 30;
+        var hit = self.hitManager.addHit(player);
+        hits[hit.id] = hit;
+        player.attackStep = 30;
       }
 
       if (movedHorizontally && movedVertically) {

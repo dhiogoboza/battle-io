@@ -213,6 +213,7 @@ window.onload = function () {
       user.id = userData.id;
       user.swid = userData.swid;
       user.name = userData.name;
+      user.heroId = userData.heroId;
       if (userData.attack) {
         console.log(userData.attack)
         user.attack = userData.attack;
@@ -225,28 +226,14 @@ window.onload = function () {
         fill: '#666666',
         align: 'center'
       };
-
+      
       user.label = game.add.text(0, 0, user.name, textStyle);
       user.label.anchor.set(0.5);
 
-      var sprite;
-
-      if (userData.id == playerId) {
-        sprite = createTexturedSprite({
-          texture: 'you-down'
-        });
-      } else if (userData.subtype == 'bot') {
-        sprite = createTexturedSprite({
-          texture: 'bot-down'
-        });
-      } else {
-        sprite = createTexturedSprite({
-          texture: 'others-down'
-        });
-      }
-
       user.score = userData.score;
-      user.sprite = sprite;
+      user.sprite = createTexturedSprite({
+        texture: user.heroId + '-' + user.direction
+      });
 
       user.sprite.width = Math.round(userData.diam * 0.73);
       user.sprite.height = userData.diam;

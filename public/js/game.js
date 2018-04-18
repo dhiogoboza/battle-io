@@ -213,6 +213,7 @@ window.onload = function () {
       user.swid = userData.swid;
       user.name = userData.name;
       user.heroId = userData.heroId;
+      user.direction = 'down';
       if (userData.attack) {
         user.attack = userData.attack;
       } else {

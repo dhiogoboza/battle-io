@@ -285,8 +285,12 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
         movedHorizontally = true;
       }
       // attack
-      if (playerOp.a) {
+      if (player.att_step) {
+        player.att_step--;
         attack = true;
+      } else if (playerOp.a) {
+        attack = true;
+        player.att_step = 10;
       }
 
       if (movedHorizontally && movedVertically) {

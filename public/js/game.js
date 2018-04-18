@@ -175,7 +175,6 @@ window.onload = function () {
       }
       
       user.sprite.loadTexture(user.heroId + '-' + user.direction + user.attack);
-
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
     }
 
@@ -215,7 +214,6 @@ window.onload = function () {
       user.name = userData.name;
       user.heroId = userData.heroId;
       if (userData.attack) {
-        console.log(userData.attack)
         user.attack = userData.attack;
       } else {
         user.attack = '';
@@ -277,6 +275,10 @@ window.onload = function () {
         user.score = userData.score;
         user.direction = userData.direction;
         user.heroId = userData.heroId;
+        
+        if (!user.direction) {
+            user.direction = 'down';
+        }
         
         if (userData.attack) {
           user.attack = userData.attack;

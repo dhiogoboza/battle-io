@@ -50,6 +50,7 @@ var SAT = require('sat');
 var config = require('./config');
 var BotManager = require('./bot-manager').BotManager;
 var CoinManager = require('./coin-manager').CoinManager;
+var HitManager = require('./hit-manager').HitManager;
 
 // This controller will be instantiated once for each
 // cell in our world grid.
@@ -103,6 +104,11 @@ var CellController = function (options, util) {
     {r: 1},
     {l: 1}
   ];
+  
+  this.hitManager = new HitManager({
+    cellData: options.cellData,
+    cellBounds: options.cellBounds
+  });
 
   this.coinManager = new CoinManager({
     cellData: options.cellData,
@@ -156,8 +162,12 @@ CellController.prototype.run = function (cellData) {
   if (!cellData.coin) {
     cellData.coin = {};
   }
+  if (!cellData.hits) {
+    cellData.hits = {};
+  }
   var players = cellData.player;
   var coins = cellData.coin;
+  var hits = cellData.hits;
 
   // Sorting is important to achieve consistency across cells.
   var playerIds = Object.keys(players).sort(this.playerCompareFn);
@@ -165,7 +175,7 @@ CellController.prototype.run = function (cellData) {
   this.findPlayerOverlaps(playerIds, players, coins);
   this.dropCoins(coins);
   this.generateBotOps(playerIds, players);
-  this.applyPlayerOps(playerIds, players, coins);
+  this.applyPlayerOps(playerIds, players, coins, hits);
 };
 
 CellController.prototype.dropCoins = function (coins) {
@@ -244,7 +254,7 @@ CellController.prototype.keepPlayerOnGrid = function (player) {
   }
 };
 
-CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
+CellController.prototype.applyPlayerOps = function (playerIds, players, coins, hits) {
   var self = this;
 
   playerIds.forEach(function (playerId) {
@@ -285,8 +295,15 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
         movedHorizontally = true;
       }
       // attack
-      if (playerOp.a) {
+      
+      if (player.attack_step) {
+        player.attack_step--;
+      } else if (playerOp.a) {
         attack = true;
+        
+        //var hit = self.hitManager.addHit(player);
+        //hits[hit.id] = hit;
+        player.attack_step = 30;
       }
 
       if (movedHorizontally && movedVertically) {
@@ -296,7 +313,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
 
       player.x += movementVector.x;
       player.y += movementVector.y;
-      player.attack = attack ? "Attack" : "";
+      player.attack = "";//attack ? "Attack" : "";
       
       if (player.type == 'player' && 'bot' != player.subtype) {
         //console.log(player.type + "[" + player.name + "]: " + player.heroId)

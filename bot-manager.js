@@ -54,6 +54,7 @@ BotManager.prototype.addBot = function (options) {
     speed: options.speed == null ? this.botMoveSpeed : options.speed,
     mass: options.mass || this.botMass,
     diam: diameter,
+    attackStep: 0,
     changeDirProb: this.botChangeDirectionProbability,
     op: {}
   };

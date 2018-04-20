@@ -717,6 +717,8 @@ module.exports.run = function (worker) {
         heroId: playerOptions.heroId,
         // active hits count
         hitCount: 0,
+        lastAttackDelay: -5,
+        health: config.HEROS_OPTIONS[playerOptions.heroId].baseHealth,
         attackStep: 0,
         x: startingPos.x,
         y: startingPos.y,

@@ -48,6 +48,7 @@ BotManager.prototype.addBot = function (options) {
     type: 'player',
     // bots with heroId = 0
     heroId: 0,
+    lastAttackDelay: -5,
     subtype: 'bot',
     name: options.name || 'bot-' + Math.round(Math.random() * 10000),
     score: options.score || 0,

@@ -90,8 +90,22 @@ module.exports = {
   // to the front end.
   OUTBOUND_STATE_TRANSFORMERS: {
     coin: genericStateTransformer,
+    hit: genericStateTransformer,
     player: genericStateTransformer
-  }
+  },
+  
+  HEROS_OPTIONS: [
+    { // 0
+      baseHealth: 100,
+      hit: "melle",
+      radius: 10
+    },
+    { // 1
+      baseHealth: 100,
+      hit: "melle",
+      radius: 10
+    }
+  ]
 };
 
 var privateProps = {
@@ -106,7 +120,9 @@ var privateProps = {
   pendingGroup: true,
   group: true,
   version: true,
-  external: true
+  external: true,
+  attackStep: true,
+  lastAttackDelay: true
 };
 
 function genericStateTransformer(state) {

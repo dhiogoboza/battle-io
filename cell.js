@@ -162,12 +162,12 @@ CellController.prototype.run = function (cellData) {
   if (!cellData.coin) {
     cellData.coin = {};
   }
-  if (!cellData.hits) {
-    cellData.hits = {};
+  if (!cellData.hit) {
+    cellData.hit = {};
   }
   var players = cellData.player;
   var coins = cellData.coin;
-  var hits = cellData.hits;
+  var hits = cellData.hit;
 
   // Sorting is important to achieve consistency across cells.
   var playerIds = Object.keys(players).sort(this.playerCompareFn);
@@ -272,7 +272,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       var movementVector = {x: 0, y: 0};
       var movedHorizontally = false;
       var movedVertically = false;
-      var attack = false;
+      //var attack = false;
 
       if (playerOp.u) {
         movementVector.y = -moveSpeed;
@@ -296,13 +296,19 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
 
       // attack
-      if (player.attackStep) {
-        player.attackStep--;
-      } else if (playerOp.a) {
-        attack = true;
+      if (player.type == 'player' && 'bot' != player.subtype) {
+        //console.log(player.attackStep);
+      }
+      
+      if (playerOp.a && player.lastAttackDelay === 0) {
+        //attack = true;
         var hit = self.hitManager.addHit(player);
-        hits[hit.id] = hit;
-        player.attackStep = 30;
+        if (hit) {
+          hits[hit.id] = hit;
+          player.attackStep = 5;
+          player.lastAttackDelay = -10;
+        }
+        //console.log(hits);
       }
 
       if (movedHorizontally && movedVertically) {
@@ -318,7 +324,16 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         //console.log(player.type + "[" + player.name + "]: " + player.heroId)
       }
     }
-
+    
+    if (player.attackStep > 0) {
+      player.attackStep--;
+    } else if (player.attackStep === 0) {
+      player.attackStep = -1;
+      self.hitManager.removeHit(player.id);
+    } else if (player.lastAttackDelay < 0) {
+      player.lastAttackDelay++;
+    }
+    
     if (player.playerOverlaps) {
       player.playerOverlaps.forEach(function (otherPlayer) {
         self.resolvePlayerCollision(player, otherPlayer);
@@ -386,7 +401,7 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
       coinWinner.coinOverlaps.push(coin);
     }
   });
-
+  
   playerIds.forEach(function (playerId) {
     delete players[playerId].hitArea;
   });

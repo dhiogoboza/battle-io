@@ -8,8 +8,9 @@ window.onload = function () {
         //  Although it will work fine with this tutorial, it's almost certainly not the most current version.
         //  Be sure to replace it with an updated version before you start experimenting with adding your own code.
     
-    var gameContainer = document.getElementById("game_content")
-    var game, playerId, player;
+    var gameContainer = document.getElementById("game-content");
+    var preGameContainer = document.getElementById("pre-game");
+    var game, playerId, player, playerHeroId;
     users = {};
     coins = {};
     
@@ -43,8 +44,8 @@ window.onload = function () {
     var HERO_1 = 1;
     var HERO_2 = 2;
 
-    var WORLD_WIDTH;
-    var WORLD_HEIGHT;
+    var WORLD_WIDTH = 800;
+    var WORLD_HEIGHT = 600;
     var WORLD_COLS;
     var WORLD_ROWS;
     var WORLD_CELL_WIDTH;
@@ -98,33 +99,71 @@ window.onload = function () {
     var CAMERA_SMOOTHING = 1;
     var BACKGROUND_TEXTURE = 'img/background-texture.png';
 
-    socket.emit('getWorldInfo', null, function (err, data) {
-      WORLD_WIDTH = data.width;
-      WORLD_HEIGHT = data.height;
-      WORLD_COLS = data.cols;
-      WORLD_ROWS = data.rows;
-      WORLD_CELL_WIDTH = data.cellWidth;
-      WORLD_CELL_HEIGHT = data.cellHeight;
-      WORLD_CELL_OVERLAP_DISTANCE = data.cellOverlapDistance;
-      SERVER_WORKER_ID = data.serverWorkerId;
-      ENVIRONMENT = data.environment;
+    function initLayout() {
+      var x_start = (window.innerWidth - WORLD_WIDTH) / 2;
+      var y_start = ((window.innerHeight - WORLD_HEIGHT) / 2) - document.getElementById("game-top").innerHeight;
+      
+      if (x_start < 0) {
+        x_start = 0;
+      }
+      
+      if (y_start < 0) {
+        y_start = 0;
+      }
+      
+      gameContainer.style.display = "none";
+      preGameContainer.style.display = "block";
+      
+      centerContainer = document.getElementById("center-container");
+      centerContainer.style.left = x_start + "px";
+      centerContainer.style.top = y_start + "px";
+      
+      centerContainer.style.width = WORLD_WIDTH + "px";
+      centerContainer.style.height = WORLD_HEIGHT + "px";
+      
+      var clickHandler = function(obj) { 
+        playerHeroId = this.getAttribute("data-heroId");
+        gameContainer.style.display = "block";
+        preGameContainer.style.display = "none";
+        startGame();
+      };
 
-      channelGrid = new ChannelGrid({
-        worldWidth: WORLD_WIDTH,
-        worldHeight: WORLD_HEIGHT,
-        rows: WORLD_ROWS,
-        cols: WORLD_COLS,
-        cellOverlapDistance: WORLD_CELL_OVERLAP_DISTANCE,
-        exchange: socket
-      });
+      var cards = document.querySelectorAll(".card");
+      for (var i = 0; i < cards.length; i++) {
+        var current = cards[i];
+        current.addEventListener('click', clickHandler, false);
+      }
+    }
 
-      game = new Phaser.Game(WORLD_WIDTH, WORLD_HEIGHT, Phaser.AUTO, gameContainer, {
-        preload: preload,
-        create: create,
-        render: render,
-        update: update
+    function startGame() {
+      socket.emit('getWorldInfo', null, function (err, data) {
+        WORLD_WIDTH = data.width;
+        WORLD_HEIGHT = data.height;
+        WORLD_COLS = data.cols;
+        WORLD_ROWS = data.rows;
+        WORLD_CELL_WIDTH = data.cellWidth;
+        WORLD_CELL_HEIGHT = data.cellHeight;
+        WORLD_CELL_OVERLAP_DISTANCE = data.cellOverlapDistance;
+        SERVER_WORKER_ID = data.serverWorkerId;
+        ENVIRONMENT = data.environment;
+
+        channelGrid = new ChannelGrid({
+          worldWidth: WORLD_WIDTH,
+          worldHeight: WORLD_HEIGHT,
+          rows: WORLD_ROWS,
+          cols: WORLD_COLS,
+          cellOverlapDistance: WORLD_CELL_OVERLAP_DISTANCE,
+          exchange: socket
+        });
+
+        game = new Phaser.Game(WORLD_WIDTH, WORLD_HEIGHT, Phaser.AUTO, gameContainer, {
+          preload: preload,
+          create: create,
+          render: render,
+          update: update
+        });
       });
-    });
+    }
 
     function preload() {
       keys = {
@@ -301,7 +340,6 @@ window.onload = function () {
 
       if (userData.id == playerId) {
         player = user;
-        game.camera.setSize(WORLD_WIDTH, WORLD_HEIGHT);
       }
     }
 
@@ -434,21 +472,6 @@ window.onload = function () {
       background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
       game.time.advancedTiming = true;
       
-      var x_start = (window.innerWidth - WORLD_WIDTH) / 2;
-      var y_start = ((window.innerHeight - WORLD_HEIGHT) / 2) - document.getElementById("game-top").innerHeight;
-      
-      if (x_start < 0) {
-        x_start = 0;
-      }
-      
-      if (y_start < 0) {
-        y_start = 0;
-      }
-      
-      centerContainer = document.getElementById("center-container");
-      centerContainer.style.left = x_start + "px";
-      centerContainer.style.top = y_start + "px";
-      
       gameContainer.style.width = WORLD_WIDTH + "px";
       gameContainer.style.height = WORLD_HEIGHT + "px";
       
@@ -460,7 +483,7 @@ window.onload = function () {
       function joinWorld() {
         socket.emit('join', {
           name: playerName,
-          heroId: HERO_1
+          heroId: playerHeroId
         }, function (err, playerData) {
           playerId = playerData.id;
           updateCellWatchers(playerData, 'cell-data', handleCellData);
@@ -543,4 +566,6 @@ window.onload = function () {
         }
       }
     }
+    
+    initLayout();
 };

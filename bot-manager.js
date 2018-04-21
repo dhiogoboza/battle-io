@@ -1,6 +1,8 @@
 var uuid = require('uuid');
 var SAT = require('sat');
 
+var config = require('./config');
+
 var BOT_DEFAULT_DIAMETER = 80;
 var BOT_DEFAULT_SPEED = 1;
 var BOT_DEFAULT_MASS = 10;
@@ -50,6 +52,7 @@ BotManager.prototype.addBot = function (options) {
     heroId: 0,
     lastAttackDelay: -5,
     subtype: 'bot',
+    health: config.HEROS_OPTIONS[0].baseHealth,
     name: options.name || 'bot-' + Math.round(Math.random() * 10000),
     score: options.score || 0,
     speed: options.speed == null ? this.botMoveSpeed : options.speed,

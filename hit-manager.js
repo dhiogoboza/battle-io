@@ -24,24 +24,21 @@ var HitManager = function (options) {
 HitManager.prototype.addHit = function (player) {
   //var hitId = uuid.v4();
   var position = new SAT.Vector(player.x, player.y);
-  var damage = player.damage || HIT_DEFAULT_DAMAGE;
-  if (player.hitCount < MAX_HITS_BY_PLAYER) {
-    var hit = {
-      id: "hit-" + player.id,
-      type: 'hit',
-      playerId: player.id,
-      subtype: config.HEROS_OPTIONS[player.heroId].hit,
-      damage: damage,
-      step: 0,
-      x: position.x,
-      y: position.y,
-      r: config.HEROS_OPTIONS[player.heroId].radius
-    };
-    this.hits[hit.id] = hit;
-    this.hitCount++;
-    return hit;
-  }
-  return null;
+  var heroConfig = config.HEROS_OPTIONS[player.heroId];
+  var hit = {
+    id: "hit-" + player.id,
+    type: 'hit',
+    playerId: player.id,
+    subtype: heroConfig.hit,
+    damage: heroConfig.damage,
+    step: 0,
+    x: position.x,
+    y: position.y,
+    r: heroConfig.radius
+  };
+  this.hits[hit.id] = hit;
+  this.hitCount++;
+  return hit;
 };
 
 HitManager.prototype.removeHit = function (playerId) {

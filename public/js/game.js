@@ -13,6 +13,33 @@ window.onload = function () {
     users = {};
     coins = {};
     
+    var HEROS_OPTIONS = [
+      { // 0 bot
+        baseHealth: 100,
+        hit: "melle",
+        radius: 10, // radius from hit
+        damage: 5,
+        diameter: 45,
+        mass: 20
+      },
+      { // hero 1
+        baseHealth: 100,
+        hit: "melle",
+        radius: 10, // radius from hit
+        damage: 5,
+        diameter: 45,
+        mass: 20
+      },
+      { // hero 2
+        baseHealth: 100,
+        hit: "melle",
+        radius: 10, // radius from hit
+        damage: 5,
+        diameter: 45,
+        mass: 20
+      }
+    ];
+    
     var HERO_1 = 1;
     var HERO_2 = 2;
 
@@ -154,7 +181,6 @@ window.onload = function () {
           }
         } else if (state.type == 'hit') {
           if (state.delete) {
-            console.log("delete")
             removeHit(state);
           } else {
             renderHit(state);
@@ -186,19 +212,14 @@ window.onload = function () {
         user.direction = 'down';
       }
       
-      if (!user.attack) {
-        user.attack = '';
-        //console.log("sem attack");
-      }
-      
-      if (!user.heroId) {
-        //user.heroId = 0;
-        //console.log("what??");
-      }
-      
-      user.sprite.loadTexture(user.heroId + '-' + user.direction + user.attack);
-
+      user.sprite.loadTexture(user.heroId + '-' + user.direction);
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
+      
+      console.log(user.health)
+      if (user.lastHealth != user.health) {
+        var lifePercentage = user.health / HEROS_OPTIONS[user.heroId].baseHealth;
+        user.life.width = Math.round(user.sprite.width * lifePercentage);
+      }
     }
 
     function moveUser(userId, x, y) {
@@ -238,11 +259,8 @@ window.onload = function () {
       user.heroId = userData.heroId;
       user.attackStep = userData.attackStep || 0;
       user.direction = "down";
-      if (userData.attack) {
-        user.attack = userData.attack;
-      } else {
-        user.attack = '';
-      }
+      user.health = userData.health;
+      user.lastHealth = user.health;
 
       var textStyle = {
         font: '16px Arial',
@@ -275,6 +293,9 @@ window.onload = function () {
       lifeGraphics.drawRect(0, 0, user.sprite.width, 10);
       lifeGraphics.endFill();
       user.life.loadTexture(lifeGraphics.generateTexture());
+      
+      var lifePercentage = user.health / HEROS_OPTIONS[user.heroId].baseHealth;
+      user.life.width = Math.round(user.sprite.width * lifePercentage)
 
       moveUser(userData.id, userData.x, userData.y);
 
@@ -313,6 +334,7 @@ window.onload = function () {
         user.direction = userData.direction;
         user.heroId = userData.heroId;
         user.attackStep = userData.attackStep;
+        user.health = userData.health;
         
         if (userData.attack) {
           user.attack = userData.attack;
@@ -378,7 +400,7 @@ window.onload = function () {
         //user.sword.rotation = user.attackStep;
         //user.sword.knockbackDirection = 0.5;
         //user.sword.knockbackAmt = 600;
-        
+        // TODO: save offsets in user object, if direction not change, do not need recalculation
         switch (user.direction) {
           case "down":
             user.sword.y = (user.sprite.height / 2);

@@ -95,15 +95,29 @@ module.exports = {
   },
   
   HEROS_OPTIONS: [
-    { // 0
+    { // 0 bot
       baseHealth: 100,
       hit: "melle",
-      radius: 10
+      radius: 10, // radius from hit
+      damage: 5,
+      diameter: 45,
+      mass: 20
     },
-    { // 1
+    { // hero 1
       baseHealth: 100,
       hit: "melle",
-      radius: 10
+      radius: 10, // radius from hit
+      damage: 15,
+      diameter: 45,
+      mass: 20
+    },
+    { // hero 2
+      baseHealth: 100,
+      hit: "range",
+      radius: 5, // radius from hit
+      damage: 5,
+      diameter: 45,
+      mass: 20
     }
   ]
 };

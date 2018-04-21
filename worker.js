@@ -708,22 +708,20 @@ module.exports.run = function (worker) {
 
     socket.on('join', function (playerOptions, respond) {
       var startingPos = getRandomPosition(PLAYER_DIAMETER, PLAYER_DIAMETER);
+      var heroConfig = config.HEROS_OPTIONS[playerOptions.heroId];
       var player = {
         id: uuid.v4(),
         type: 'player',
         swid: serverWorkerId,
         name: playerOptions.name,
-        // Id of hero
         heroId: playerOptions.heroId,
-        // active hits count
-        hitCount: 0,
         lastAttackDelay: -5,
-        health: config.HEROS_OPTIONS[playerOptions.heroId].baseHealth,
+        health: heroConfig.baseHealth,
         attackStep: 0,
         x: startingPos.x,
         y: startingPos.y,
-        diam: PLAYER_DIAMETER,
-        mass: PLAYER_MASS,
+        diam: heroConfig.diameter,
+        mass: heroConfig.mass,
         score: 0
       };
       

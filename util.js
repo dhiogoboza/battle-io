@@ -54,4 +54,14 @@ Util.prototype.ungroupStateFromAll = function (state) {
   self.ungroupStates(stateUngroupList);
 };
 
+Util.prototype.removeByVal = function(array, val) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] === val) {
+            array.splice(i, 1);
+            i--;
+        }
+    }
+    return this;
+}
+
 module.exports.Util = Util;

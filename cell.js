@@ -171,7 +171,7 @@ CellController.prototype.run = function (cellData) {
 
   // Sorting is important to achieve consistency across cells.
   var playerIds = Object.keys(players).sort(this.playerCompareFn);
-
+  
   this.findPlayerOverlaps(playerIds, players, coins, hits);
   this.dropCoins(coins);
   this.generateBotOps(playerIds, players);
@@ -296,9 +296,9 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
 
       // attack
-      if (player.type == 'player' && 'bot' != player.subtype) {
+      //if (player.type == 'player' && 'bot' != player.subtype) {
         //console.log(player.attackStep);
-      }
+      //}
       
       if (playerOp.a && player.lastAttackDelay === 0) {
         //attack = true;
@@ -320,9 +320,9 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       player.y += movementVector.y;
       player.attack = "";//attack ? "Attack" : "";
       
-      if (player.type == 'player' && 'bot' != player.subtype) {
+      //if (player.type == 'player' && 'bot' != player.subtype) {
         //console.log(player.type + "[" + player.name + "]: " + player.heroId)
-      }
+      //}
     }
     
     if (player.attackStep > 0) {
@@ -429,18 +429,26 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
       }
       
       var hitHitArea = self.generateHitArea(hit);
+      
+      playerTree.remove(player.hitArea);
       var hitList = playerTree.search(hitHitArea);
-
+      playerTree.insert(player.hitArea);
+      
       if (hitList.length) {
         // If multiple players hit the hit, give it to a random one.
         var randomIndex = Math.floor(Math.random() * hitList.length);
-        var hitWinner = hitList[randomIndex].target;
-
-        if (!hitWinner.hitOverlaps) {
-          hitWinner.hitOverlaps = [];
+        var affectedPlayer = hitList[randomIndex].target;
+        
+        affectedPlayer.health -= hit.damage;
+        
+        if (affectedPlayer.health <= 0) {
+          affectedPlayer.health = 0;
+          // kill player
+          //self.options.worker.stateManager.delete(affectedPlayer);
+          //playerIds.remove(affectedPlayer.id);
+          self.util.removeByVal(playerIds, affectedPlayer.id);
+          delete players[affectedPlayer.id];
         }
-
-        hitWinner.hitOverlaps.push(hit);
       }
     }
   });

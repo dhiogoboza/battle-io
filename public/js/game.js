@@ -28,7 +28,7 @@ window.onload = function () {
     var COIN_INACTIVITY_TIMEOUT = 2200;
     var ENVIRONMENT;
     var SERVER_WORKER_ID;
-
+    
     var herosTextures = [
       { // bot 0
         up: 'img/bot-back.gif',
@@ -262,12 +262,19 @@ window.onload = function () {
       user.sprite.height = userData.diam;
       user.diam = user.sprite.width;
 
-      // create a group for the player's hitbox attack
+      // User melle attack
       var attackHitbox = game.add.group();
-      // give to the hitbox a physics body
-      attackHitbox.enableBody = true;
-      // make the hitbox child of the player. It will now move with the player
       user.sprite.addChild(attackHitbox);
+      
+      // User life sprite
+      var lifeHitbox = game.add.group();
+      user.sprite.addChild(lifeHitbox);
+      user.life = lifeHitbox.create(-(user.sprite.width / 2), -user.sprite.height, null);
+      var lifeGraphics = game.add.graphics(0, 0);
+      lifeGraphics.beginFill(0x00FF00);
+      lifeGraphics.drawRect(0, 0, user.sprite.width, 10);
+      lifeGraphics.endFill();
+      user.life.loadTexture(lifeGraphics.generateTexture());
 
       moveUser(userData.id, userData.x, userData.y);
 
@@ -359,9 +366,9 @@ window.onload = function () {
           var attackHitbox = user.sprite.getChildAt(0);
           user.sword = attackHitbox.create(0, 0, null);
           // set the size of the hitbox, and its position relative to the player
-          user.sword.body.setSize(0, 0, user.sprite.diam / 2, user.sprite.diam / 2);
+          //user.sword.body.setSize(0, 0, user.sprite.diam / 2, user.sprite.diam / 2);
           // add some properties to the hitbox. These can be accessed later for use in calculations
-          user.sword.name = "sword";
+          //user.sword.name = "sword";
         }
         
         // update sword

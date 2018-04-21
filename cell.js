@@ -172,7 +172,7 @@ CellController.prototype.run = function (cellData) {
   // Sorting is important to achieve consistency across cells.
   var playerIds = Object.keys(players).sort(this.playerCompareFn);
 
-  this.findPlayerOverlaps(playerIds, players, coins);
+  this.findPlayerOverlaps(playerIds, players, coins, hits);
   this.dropCoins(coins);
   this.generateBotOps(playerIds, players);
   this.applyPlayerOps(playerIds, players, coins, hits);
@@ -356,7 +356,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
   });
 };
 
-CellController.prototype.findPlayerOverlaps = function (playerIds, players, coins) {
+CellController.prototype.findPlayerOverlaps = function (playerIds, players, coins, hits) {
   var self = this;
 
   var playerTree = new rbush();
@@ -399,6 +399,49 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
         coinWinner.coinOverlaps = [];
       }
       coinWinner.coinOverlaps.push(coin);
+    }
+  });
+  
+  var hitsIds = Object.keys(hits);
+  hitsIds.forEach(function (hitId) {
+    var hit = hits[hitId];
+    var player = players[hit.playerId];
+    if (player) {
+      var player_r = Math.round(player.diam / 2);
+      
+      switch (player.direction) {
+        case "down":
+          hit.y = player.y + player_r;
+          hit.x = player.x - player_r;
+          break;
+        case "up":
+          hit.y = player.y - player_r;
+          hit.x = player.x - player_r;
+          break;
+        case "left":
+          hit.y = player.y - player_r;
+          hit.x = player.x - player.diam;
+          break;
+        case "right":
+          hit.y = player.y - player_r;
+          hit.x = player.x - 0;
+          break;
+      }
+      
+      var hitHitArea = self.generateHitArea(hit);
+      var hitList = playerTree.search(hitHitArea);
+
+      if (hitList.length) {
+        // If multiple players hit the hit, give it to a random one.
+        var randomIndex = Math.floor(Math.random() * hitList.length);
+        var hitWinner = hitList[randomIndex].target;
+
+        if (!hitWinner.hitOverlaps) {
+          hitWinner.hitOverlaps = [];
+        }
+
+        hitWinner.hitOverlaps.push(hit);
+      }
     }
   });
   

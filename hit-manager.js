@@ -32,10 +32,10 @@ HitManager.prototype.addHit = function (player) {
       playerId: player.id,
       subtype: config.HEROS_OPTIONS[player.heroId].hit,
       damage: damage,
-      direction: player.direction,
       step: 0,
       x: position.x,
-      y: position.y
+      y: position.y,
+      r: config.HEROS_OPTIONS[player.heroId].radius
     };
     this.hits[hit.id] = hit;
     this.hitCount++;
@@ -59,7 +59,7 @@ HitManager.prototype.doesPlayerTouchHit = function (hitId, player) {
     return false;
   }
   var playerCircle = new SAT.Circle(new SAT.Vector(player.x, player.y), Math.ceil(player.width / 2));
-  var hitCircle = new SAT.Circle(new SAT.Vector(hit.x, hit.y), config.HEROS_OPTIONS[player.heroId].radius);
+  var hitCircle = new SAT.Circle(new SAT.Vector(hit.x, hit.y), hit.radius);
   return SAT.testCircleCircle(playerCircle, hitCircle);
 };
 

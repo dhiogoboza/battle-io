@@ -36,6 +36,12 @@ HitManager.prototype.addHit = function (player) {
     y: position.y,
     r: heroConfig.radius
   };
+  
+  if (hit.subtype == "range") {
+    hit.direction = player.direction;
+    hit.speed = 10;
+  }
+  
   this.hits[hit.id] = hit;
   this.hitCount++;
   return hit;

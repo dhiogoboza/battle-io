@@ -13,6 +13,7 @@ window.onload = function () {
     var game, playerId, player, playerHeroId;
     users = {};
     coins = {};
+    shots = {};
     
     var HEROS_OPTIONS = [
       { // 0 bot
@@ -33,7 +34,7 @@ window.onload = function () {
       },
       { // hero 2
         baseHealth: 100,
-        hit: "melle",
+        hit: "range",
         radius: 10, // radius from hit
         damage: 5,
         diameter: 45,

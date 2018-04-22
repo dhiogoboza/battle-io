@@ -435,7 +435,6 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
       playerTree.insert(player.hitArea);
       
       if (hitList.length) {
-        // If multiple players hit the hit, give it to a random one.
         var randomIndex = Math.floor(Math.random() * hitList.length);
         var affectedPlayer = hitList[randomIndex].target;
         
@@ -444,8 +443,6 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
         if (affectedPlayer.health <= 0) {
           affectedPlayer.health = 0;
           // kill player
-          //self.options.worker.stateManager.delete(affectedPlayer);
-          //playerIds.remove(affectedPlayer.id);
           self.util.removeByVal(playerIds, affectedPlayer.id);
           delete players[affectedPlayer.id];
         }

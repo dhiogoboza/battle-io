@@ -18,7 +18,7 @@ window.onload = function () {
     var HEROS_OPTIONS = [
       { // 0 bot
         baseHealth: 100,
-        hit: "melle",
+        hit: "melee",
         radius: 10, // radius from hit
         damage: 5,
         diameter: 45,
@@ -210,8 +210,6 @@ window.onload = function () {
     function handleCellData(stateList) {
       stateList.forEach(function (state) {
         if (state.type == 'player') {
-          //console.log('state');
-          //console.log(state);
           updateUser(state);
         } else if (state.type == 'coin') {
           if (state.delete) {
@@ -255,7 +253,6 @@ window.onload = function () {
       user.sprite.loadTexture(user.heroId + '-' + user.direction);
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
       
-      console.log(user.health)
       if (user.lastHealth != user.health) {
         var lifePercentage = user.health / HEROS_OPTIONS[user.heroId].baseHealth;
         user.life.width = Math.round(user.sprite.width * lifePercentage);
@@ -319,6 +316,9 @@ window.onload = function () {
       user.sprite.width = Math.round(userData.diam * 0.73);
       user.sprite.height = userData.diam;
       user.diam = user.sprite.width;
+
+      user.w2 = user.sprite.width / 2;      
+      user.h2 = user.sprite.height / 2;
 
       // User melle attack
       var attackHitbox = game.add.group();
@@ -410,62 +410,65 @@ window.onload = function () {
       }
     }
     
-    function renderHit(hitData) {
-      var hit = hitData;
+    function renderHit(hit) {
       var user = users[hit.playerId];
       
       if (user) {
-        if (!user.sword) {
-          //console.log(user);
-          /*hits[hitData.id] = hit;
-          hit.sprite = createTexturedSprite({
-            texture: 'sword-' + user.direction
-          });
-          hit.sprite.x = hitData.x;
-          hit.sprite.y = hitData.y;
-          hit.clientProcessed = Date.now();*/
-          var attackHitbox = user.sprite.getChildAt(0);
-          user.sword = attackHitbox.create(0, 0, null);
-          // set the size of the hitbox, and its position relative to the player
-          //user.sword.body.setSize(0, 0, user.sprite.diam / 2, user.sprite.diam / 2);
-          // add some properties to the hitbox. These can be accessed later for use in calculations
-          //user.sword.name = "sword";
-        }
-        
-        // update sword
-        
-        user.sword.loadTexture('sword-' + user.direction);
-        
-        //user.sword.rotation = user.attackStep;
-        //user.sword.knockbackDirection = 0.5;
-        //user.sword.knockbackAmt = 600;
-        // TODO: save offsets in user object, if direction not change, do not need recalculation
-        switch (user.direction) {
-          case "down":
-            user.sword.y = (user.sprite.height / 2);
-            user.sword.x = -(user.sprite.width / 2);
+        switch(hit.subtype) {
+          case "melee":
+            if (!user.sword) {
+              var attackHitbox = user.sprite.getChildAt(0);
+              user.sword = attackHitbox.create(0, 0, null);
+              user.swordDirection = "";
+            }
+            
+            if (user.swordDirection !== user.direction) {
+              updateUserSword(user);
+            }
+            
             break;
-          case "up":
-            user.sword.y = -user.sprite.height;
-            user.sword.x = -(user.sprite.width / 2);
-            break;
-          case "left":
-            user.sword.y = -(user.sprite.height / 2);
-            user.sword.x = -user.sprite.width;
-            break;
-          case "right":
-            user.sword.y = -(user.sprite.height / 2);
-            user.sword.x = 0;
+          case "range":
+            // TODO: add hit to shots list and draw it
             break;
         }
       }
     }
     
-    function removeHit(hitData) {
-      var user = users[hitData.playerId];
-      if (user) {
-        user.sword.kill();
-        user.sword = undefined;
+    function removeHit(hit) {
+      switch(hit.subtype) {
+        case "melee":
+          var user = users[hit.playerId];
+          if (user && user.sword) {
+            user.sword.kill();
+            user.sword = undefined;
+          }
+        break;
+        case "range":
+          // TODO: remove shot from shots list
+        break;
+      }
+    }
+    
+    function updateUserSword(user) {
+      user.swordDirection = user.direction;
+      user.sword.loadTexture('sword-' + user.direction);
+      switch (user.direction) {
+        case "down":
+          user.sword.y = user.h2;
+          user.sword.x = -user.w2;
+          break;
+        case "up":
+          user.sword.y = -user.sprite.height;
+          user.sword.x = -user.w2;
+          break;
+        case "left":
+          user.sword.y = -user.h2;
+          user.sword.x = -user.sprite.width;
+          break;
+        case "right":
+          user.sword.y = -user.h2;
+          user.sword.x = 0;
+          break;
       }
     }
 

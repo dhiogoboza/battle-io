@@ -406,48 +406,59 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
   hitsIds.forEach(function (hitId) {
     var hit = hits[hitId];
     var player = players[hit.playerId];
-    if (player) {
-      var player_r = Math.round(player.diam / 2);
-      
-      switch (player.direction) {
-        case "down":
-          hit.y = player.y + player_r;
-          hit.x = player.x - player_r;
-          break;
-        case "up":
-          hit.y = player.y - player_r;
-          hit.x = player.x - player_r;
-          break;
-        case "left":
-          hit.y = player.y - player_r;
-          hit.x = player.x - player.diam;
-          break;
-        case "right":
-          hit.y = player.y - player_r;
-          hit.x = player.x - 0;
-          break;
-      }
-      
-      var hitHitArea = self.generateHitArea(hit);
-      
-      playerTree.remove(player.hitArea);
-      var hitList = playerTree.search(hitHitArea);
-      playerTree.insert(player.hitArea);
-      
-      if (hitList.length) {
-        var randomIndex = Math.floor(Math.random() * hitList.length);
-        var affectedPlayer = hitList[randomIndex].target;
-        
-        affectedPlayer.health -= hit.damage;
-        
-        if (affectedPlayer.health <= 0) {
-          affectedPlayer.health = 0;
-          // kill player
-          self.util.removeByVal(playerIds, affectedPlayer.id);
-          delete players[affectedPlayer.id];
+    
+    if (!player) {
+      //TODO: if player not found remove hit
+    }
+    
+    switch (hit.subtype) {
+      case "melee":
+        var player_r = Math.round(player.diam / 2);
+        switch (player.direction) {
+          case "down":
+            hit.y = player.y + player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "up":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "left":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player.diam;
+            break;
+          case "right":
+            hit.y = player.y - player_r;
+            hit.x = player.x - 0;
+            break;
         }
+        break;
+      case "range":
+        // TODO: update hit position
+        break;
+    }
+    
+    var hitHitArea = self.generateHitArea(hit);
+    
+    playerTree.remove(player.hitArea);
+    var hitList = playerTree.search(hitHitArea);
+    playerTree.insert(player.hitArea);
+    
+    if (hitList.length) {
+      var randomIndex = Math.floor(Math.random() * hitList.length);
+      var affectedPlayer = hitList[randomIndex].target;
+      
+      affectedPlayer.health -= hit.damage;
+      
+      if (affectedPlayer.health <= 0) {
+        affectedPlayer.health = 0;
+        // kill player
+        self.util.removeByVal(playerIds, affectedPlayer.id);
+        delete players[affectedPlayer.id];
       }
     }
+    
+    
   });
   
   playerIds.forEach(function (playerId) {

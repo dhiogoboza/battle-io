@@ -22,11 +22,11 @@ var HitManager = function (options) {
 };
 
 HitManager.prototype.addHit = function (player) {
-  //var hitId = uuid.v4();
-  var position = new SAT.Vector(player.x, player.y);
   var heroConfig = config.HEROS_OPTIONS[player.heroId];
+  var hitId = heroConfig.hit === "melee" ? "hit-" + player.id : uuid.v4();
+  var position = new SAT.Vector(player.x, player.y);
   var hit = {
-    id: "hit-" + player.id,
+    id: hitId,
     type: 'hit',
     playerId: player.id,
     subtype: heroConfig.hit,

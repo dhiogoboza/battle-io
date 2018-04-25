@@ -97,7 +97,7 @@ module.exports = {
   HEROS_OPTIONS: [
     { // 0 bot
       baseHealth: 100,
-      hit: "melle",
+      hit: "melee",
       radius: 10, // radius from hit
       damage: 5,
       diameter: 45,
@@ -105,7 +105,7 @@ module.exports = {
     },
     { // hero 1
       baseHealth: 100,
-      hit: "melle",
+      hit: "melee",
       radius: 10, // radius from hit
       damage: 15,
       diameter: 45,

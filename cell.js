@@ -329,7 +329,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       player.attackStep--;
     } else if (player.attackStep === 0) {
       player.attackStep = -1;
-      self.hitManager.removeHit(player.id);
+      self.hitManager.removeHit("hit-" + player.id);
     } else if (player.lastAttackDelay < 0) {
       player.lastAttackDelay++;
     }
@@ -434,7 +434,26 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
         }
         break;
       case "range":
-        // TODO: update hit position
+        switch (hit.direction) {
+          case "down":
+            hit.y += hit.speed;
+            break;
+          case "up":
+            hit.y -= hit.speed;
+            break;
+          case "left":
+            hit.x -= hit.speed;
+            break;
+          case "right":
+            hit.x += hit.speed;
+            break;
+        }
+        
+        if (hit.x < 0 || hit.x > config.WORLD_WIDTH || hit.y < 0 || hit.y > config.WORLD_HEIGHT) {
+          self.hitManager.removeHit(hit.id);
+          delete hits[hitId];
+        }
+        
         break;
     }
     

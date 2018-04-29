@@ -77,7 +77,11 @@ window.onload = function () {
         left: 'img/others-side-left.gif',
         right: 'img/others-side-right.gif',
         down: 'img/others-front.gif',
-        downAttack: 'img/others-front-attack.gif'
+        downAttack: 'img/others-front-attack.gif',
+        shotup: 'img/arrow-up.png',
+        shotleft: 'img/arrow-left.png',
+        shotright: 'img/arrow-right.png',
+        shotdown: 'img/arrow-down.png'
       }
     ];
 
@@ -410,11 +414,11 @@ window.onload = function () {
       }
     }
     
-    function renderHit(hit) {
-      var user = users[hit.playerId];
+    function renderHit(hitData) {
+      var user = users[hitData.playerId];
       
       if (user) {
-        switch(hit.subtype) {
+        switch(hitData.subtype) {
           case "melee":
             if (!user.sword) {
               var attackHitbox = user.sprite.getChildAt(0);
@@ -429,6 +433,21 @@ window.onload = function () {
             break;
           case "range":
             // TODO: add hit to shots list and draw it
+            console.log("add shot");
+            var hit = shots[hitData.id];
+            if (hit) {
+              hit.sprite.x = hitData.x;
+              hit.sprite.y = hitData.y;
+            } else {
+              hit = hitData;
+              shots[hitData.id] = hit;
+              hit.sprite = createTexturedSprite({
+                texture: users[hitData.playerId].heroId +  "-shot" + hit.direction
+              });
+              hit.sprite.x = hitData.x;
+              hit.sprite.y = hitData.y;
+            }
+            
             break;
         }
       }
@@ -445,6 +464,7 @@ window.onload = function () {
         break;
         case "range":
           // TODO: remove shot from shots list
+          console.log("remove shot");
         break;
       }
     }

@@ -40,6 +40,7 @@ HitManager.prototype.addHit = function (player) {
   if (hit.subtype == "range") {
     hit.direction = player.direction;
     hit.speed = 10;
+    console.log("criou ranged hit");
   }
   
   this.hits[hit.id] = hit;
@@ -47,8 +48,8 @@ HitManager.prototype.addHit = function (player) {
   return hit;
 };
 
-HitManager.prototype.removeHit = function (playerId) {
-  var hit = this.hits["hit-" + playerId];
+HitManager.prototype.removeHit = function (hitId) {
+  var hit = this.hits[hitId];
   if (hit) {
     hit.delete = 1;
     delete this.hits[hit.id];

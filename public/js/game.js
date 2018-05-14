@@ -57,33 +57,7 @@ window.onload = function () {
     var COIN_INACTIVITY_TIMEOUT = 2200;
     var ENVIRONMENT;
     var SERVER_WORKER_ID;
-    
-    var herosTextures = [
-      { // bot 0
-        up: 'img/bot-back.gif',
-        left: 'img/bot-side-left.gif',
-        right: 'img/bot-side-right.gif',
-        down: 'img/bot-front.gif'
-      },
-      { // hero 1
-        up: 'img/you-back.gif',
-        left: 'img/you-side-left.gif',
-        right: 'img/you-side-right.gif',
-        down: 'img/you-front.gif',
-        downAttack: 'img/you-front-attack.gif'
-      },
-      { // hero 2
-        up: 'img/others-back.gif',
-        left: 'img/others-side-left.gif',
-        right: 'img/others-side-right.gif',
-        down: 'img/others-front.gif',
-        downAttack: 'img/others-front-attack.gif',
-        shotup: 'img/arrow-up.png',
-        shotleft: 'img/arrow-left.png',
-        shotright: 'img/arrow-right.png',
-        shotdown: 'img/arrow-down.png'
-      }
-    ];
+   
 
     // Map the score value to the texture.
     var grassTextures = {
@@ -93,13 +67,6 @@ window.onload = function () {
       4: 'img/grass-4.gif'
     };
     
-    var swordTextures = [
-      'img/sword-down.png',
-      'img/sword-left.png',
-      'img/sword-up.png',
-      'img/sword-right.png'
-    ];
-
     // 1 means no smoothing. 0.1 is quite smooth.
     var CAMERA_SMOOTHING = 1;
     var BACKGROUND_TEXTURE = 'img/background-texture.png';
@@ -189,26 +156,29 @@ window.onload = function () {
 
       game.load.image('background', BACKGROUND_TEXTURE);
 
-      var count = herosTextures.length;
-      var heroId = 0;
+      // convesão do sprites
+      var count = HEROS_OPTIONS.length;
+      var sprites = ["left","right","up", "down"];
       for (var i = 0; i < count; i++) {
-        for (var key in herosTextures[i]) {
-          if (herosTextures[i].hasOwnProperty(key)) {
-            game.load.image(heroId + '-' + key, herosTextures[i][key]);
+        for (var j = 0; j < sprites.length; j++) {
+          for(var k =1; k<5; k++){
+            var nameSprite=i + '-' + sprites[j]+k;
+            var spritePath="heros/"+i+"/" + sprites[j]+k;
+            game.load.image(nameSprite, "img/sprites/"+spritePath+".png");
+            console.log(nameSprite+ " = " + "img/sprites/"+spritePath+".png");
+            //ataques 
+            nameSprite=i + '-hit' + sprites[j]+k;
+            spritePath="heros/"+i+"/hit" + sprites[j]+k;
+            game.load.image(nameSprite, "img/sprites/"+spritePath+".png");
+
           }
         }
-        heroId++;
       }
-
       game.load.image('grass-1', grassTextures[1]);
       game.load.image('grass-2', grassTextures[2]);
       game.load.image('grass-3', grassTextures[3]);
       game.load.image('grass-4', grassTextures[4]);
       
-      game.load.image('sword-down', swordTextures[0]);
-      game.load.image('sword-left', swordTextures[1]);
-      game.load.image('sword-up', swordTextures[2]);
-      game.load.image('sword-right', swordTextures[3]);
     }
 
     function handleCellData(stateList) {
@@ -251,10 +221,10 @@ window.onload = function () {
       user.sprite.y = user.y;
 
       if (!user.direction) {
-        user.direction = 'down';
+        user.direction = 'down1';
       }
-      
-      user.sprite.loadTexture(user.heroId + '-' + user.direction);
+      var attack = user.attackStep ? "-hit":'-';
+      user.sprite.loadTexture(user.heroId + attack + user.direction);
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
       
       if (user.lastHealth != user.health) {
@@ -299,7 +269,7 @@ window.onload = function () {
       user.name = userData.name;
       user.heroId = userData.heroId;
       user.attackStep = userData.attackStep || 0;
-      user.direction = "down";
+      user.direction = "down1";
       user.health = userData.health;
       user.lastHealth = user.health;
 
@@ -377,6 +347,7 @@ window.onload = function () {
         user.direction = userData.direction;
         user.heroId = userData.heroId;
         user.attackStep = userData.attackStep;
+        console.log(userData.attackStep);
         user.health = userData.health;
         
         if (userData.attack) {
@@ -470,7 +441,7 @@ window.onload = function () {
     }
     
     function updateUserSword(user) {
-      user.swordDirection = user.direction;
+      /*user.swordDirection = user.direction;
       user.sword.loadTexture('sword-' + user.direction);
       switch (user.direction) {
         case "down":
@@ -489,7 +460,7 @@ window.onload = function () {
           user.sword.y = -user.h2;
           user.sword.x = 0;
           break;
-      }
+      }*/
     }
 
     function create() {

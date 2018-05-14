@@ -1,0 +1,46 @@
+up: 'img/others-back.gif',
+        left: 'img/others-side-left.gif',
+        right: 'img/others-side-right.gif',
+        down: 'img/others-front.gif',
+        downAttack: 'img/others-front-attack.gif',
+        shotup: 'img/arrow-up.png',
+        shotleft: 'img/arrow-left.png',
+        shotright: 'img/arrow-right.png',
+        shotdown: 'img/arrow-down.png'
+        up1: 'img/others-back.gif',
+        up2: 'img/others-back.gif',
+        up3: 'img/others-back.gif',
+        up4: 'img/others-back.gif',
+        left1: 'img/others-side-left.gif',
+        left2: 'img/others-side-left.gif',
+        left3: 'img/others-side-left.gif',
+        left4: 'img/others-side-left.gif',
+        right1: 'img/others-side-right.gif',
+        right2: 'img/others-side-right.gif',
+        right3: 'img/others-side-right.gif',
+        right4: 'img/others-side-right.gif',
+        down1: 'img/others-front.gif', 
+        down2: 'img/others-front.gif',  
+        down3: 'img/others-front.gif',
+        down4: 'img/others-front.gif'
+
+
+
+      switch (user.direction) {
+        case "down":
+          user.sword.y = user.h2;
+          user.sword.x = -user.w2;
+          break;
+        case "up":
+          user.sword.y = -user.sprite.height;
+          user.sword.x = -user.w2;
+          break;
+        case "left":
+          user.sword.y = -user.h2;
+          user.sword.x = -user.sprite.width;
+          break;
+        case "right":
+          user.sword.y = -user.h2;
+          user.sword.x = 0;
+          break;
+      }

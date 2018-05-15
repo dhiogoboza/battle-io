@@ -45,8 +45,8 @@ window.onload = function () {
     var HERO_1 = 1;
     var HERO_2 = 2;
 
-    var WORLD_WIDTH = 800;
-    var WORLD_HEIGHT = 600;
+    var WORLD_WIDTH = 2000;
+    var WORLD_HEIGHT = 2000;
     var WORLD_COLS;
     var WORLD_ROWS;
     var WORLD_CELL_WIDTH;
@@ -72,8 +72,8 @@ window.onload = function () {
     var BACKGROUND_TEXTURE = 'img/background-texture.png';
 
     function initLayout() {
-      var x_start = (window.innerWidth - WORLD_WIDTH) / 2;
-      var y_start = ((window.innerHeight - WORLD_HEIGHT) / 2) - document.getElementById("game-top").innerHeight;
+      var x_start = 0;//(window.innerWidth - WORLD_WIDTH) / 2;
+      var y_start = 0;//((window.innerHeight - WORLD_HEIGHT) / 2) - document.getElementById("game-top").innerHeight;
       
       if (x_start < 0) {
         x_start = 0;
@@ -90,8 +90,13 @@ window.onload = function () {
       centerContainer.style.left = x_start + "px";
       centerContainer.style.top = y_start + "px";
       
-      centerContainer.style.width = WORLD_WIDTH + "px";
-      centerContainer.style.height = WORLD_HEIGHT + "px";
+      if (WORLD_WIDTH < window.innerWidth && WORLD_HEIGHT < window.innerHeight) {
+        centerContainer.style.width = WORLD_WIDTH + "px";
+        centerContainer.style.height = WORLD_HEIGHT + "px";
+      } else {
+        centerContainer.style.width = window.innerWidth + "px";
+        centerContainer.style.height = window.innerHeight + "px";
+      }
       
       var clickHandler = function(obj) { 
         playerHeroId = this.getAttribute("data-heroId");
@@ -128,7 +133,15 @@ window.onload = function () {
           exchange: socket
         });
 
-        game = new Phaser.Game(WORLD_WIDTH, WORLD_HEIGHT, Phaser.AUTO, gameContainer, {
+        if (WORLD_WIDTH < window.innerWidth && WORLD_HEIGHT < window.innerHeight) {
+            w = WORLD_WIDTH;
+            h = WORLD_HEIGHT;
+          } else {
+            w = window.innerWidth;
+            h = window.innerHeight;
+          }
+
+        game = new Phaser.Game(w, h, Phaser.AUTO, gameContainer, {
           preload: preload,
           create: create,
           render: render,
@@ -223,7 +236,8 @@ window.onload = function () {
       if (!user.direction) {
         user.direction = 'down1';
       }
-      var attack = user.attackStep ? "-hit":'-';
+      
+      var attack = user.attackStep != -1? "-hit":'-';
       user.sprite.loadTexture(user.heroId + attack + user.direction);
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
       
@@ -315,6 +329,8 @@ window.onload = function () {
 
       if (userData.id == playerId) {
         player = user;
+        game.camera.setSize(window.innerWidth, window.innerHeight);
+        game.camera.follow(user.sprite, null, CAMERA_SMOOTHING, CAMERA_SMOOTHING);
       }
     }
 
@@ -347,7 +363,6 @@ window.onload = function () {
         user.direction = userData.direction;
         user.heroId = userData.heroId;
         user.attackStep = userData.attackStep;
-        console.log(userData.attackStep);
         user.health = userData.health;
         
         if (userData.attack) {
@@ -464,11 +479,21 @@ window.onload = function () {
     }
 
     function create() {
+      var w,h;
+      
+      if (WORLD_WIDTH < window.innerWidth && WORLD_HEIGHT < window.innerHeight) {
+        w = WORLD_WIDTH;
+        h = WORLD_HEIGHT;
+      } else {
+        w = window.innerWidth;
+        h = window.innerHeight;
+      }
+    
       background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
       game.time.advancedTiming = true;
       
-      gameContainer.style.width = WORLD_WIDTH + "px";
-      gameContainer.style.height = WORLD_HEIGHT + "px";
+      gameContainer.style.width = w + "px";
+      gameContainer.style.height = h + "px";
       
       game.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 

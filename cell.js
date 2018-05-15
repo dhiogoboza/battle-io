@@ -276,22 +276,78 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
 
       if (playerOp.u) {
         movementVector.y = -moveSpeed;
-        player.direction = 'up';
+        switch(player.walkerStep){
+          case 0:
+            player.direction = 'up1';
+            break;
+          case 1:
+            player.direction = 'up2';
+            break;
+          case 2:
+            player.direction = 'up3';
+            break;
+          case 3:
+            player.direction = 'up4';
+            break;
+          break;
+        }
         movedVertically = true;
       }
       if (playerOp.d) {
         movementVector.y = moveSpeed;
-        player.direction = 'down';
+        switch(player.walkerStep){
+          case 0:
+            player.direction = 'down1';
+            break;
+          case 1:
+            player.direction = 'down2';
+            break;
+          case 2:
+            player.direction = 'down3';
+            break;
+          case 3:
+            player.direction = 'down4';
+            break;
+          break;
+        }
         movedVertically = true;
       }
       if (playerOp.r) {
         movementVector.x = moveSpeed;
-        player.direction = 'right';
+        switch(player.walkerStep){
+          case 0:
+            player.direction = 'right1';
+            break;
+          case 1:
+            player.direction = 'right2';
+            break;
+          case 2:
+            player.direction = 'right3';
+            break;
+          case 3:
+            player.direction = 'right4';
+            break;
+          break;
+        }
         movedHorizontally = true;
       }
       if (playerOp.l) {
         movementVector.x = -moveSpeed;
-        player.direction = 'left';
+        switch(player.walkerStep){
+          case 0:
+            player.direction = 'left1';
+            break;
+          case 1:
+            player.direction = 'left2';
+            break;
+          case 2:
+            player.direction = 'left3';
+            break;
+          case 3:
+            player.direction = 'left4';
+            break;
+          break;
+        }
         movedHorizontally = true;
       }
 
@@ -309,6 +365,15 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
           player.lastAttackDelay = -10;
         }
         //console.log(hits);
+      }
+
+      if (movedHorizontally || movedVertically) {
+        if(player.walkerStep<3){
+          player.walkerStep++;
+        }else{
+          player.walkerStep=0;
+        }
+        //console.log(player.walkerStep);
       }
 
       if (movedHorizontally && movedVertically) {
@@ -415,19 +480,67 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
       case "melee":
         var player_r = Math.round(player.diam / 2);
         switch (player.direction) {
-          case "down":
+          case "down1":
             hit.y = player.y + player_r;
             hit.x = player.x - player_r;
             break;
-          case "up":
+          case "up1":
             hit.y = player.y - player_r;
             hit.x = player.x - player_r;
             break;
-          case "left":
+          case "left1":
             hit.y = player.y - player_r;
             hit.x = player.x - player.diam;
             break;
-          case "right":
+          case "right1":
+            hit.y = player.y - player_r;
+            hit.x = player.x - 0;
+            break;
+          case "down2":
+            hit.y = player.y + player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "up2":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "left2":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player.diam;
+            break;
+          case "right2":
+            hit.y = player.y - player_r;
+            hit.x = player.x - 0;
+            break;
+          case "down3":
+            hit.y = player.y + player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "up3":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "left3":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player.diam;
+            break;
+          case "right3":
+            hit.y = player.y - player_r;
+            hit.x = player.x - 0;
+            break;
+          case "down4":
+            hit.y = player.y + player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "up4":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player_r;
+            break;
+          case "left4":
+            hit.y = player.y - player_r;
+            hit.x = player.x - player.diam;
+            break;
+          case "right4":
             hit.y = player.y - player_r;
             hit.x = player.x - 0;
             break;
@@ -445,6 +558,54 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
             hit.x -= hit.speed;
             break;
           case "right":
+            hit.x += hit.speed;
+            break;
+          case "down1":
+            hit.y += hit.speed;
+            break;
+          case "up1":
+            hit.y -= hit.speed;
+            break;
+          case "left1":
+            hit.x -= hit.speed;
+            break;
+          case "right1":
+            hit.x += hit.speed;
+            break;
+          case "down2":
+            hit.y += hit.speed;
+            break;
+          case "up2":
+            hit.y -= hit.speed;
+            break;
+          case "left2":
+            hit.x -= hit.speed;
+            break;
+          case "right2":
+            hit.x += hit.speed;
+            break;
+          case "down3":
+            hit.y += hit.speed;
+            break;
+          case "up3":
+            hit.y -= hit.speed;
+            break;
+          case "left3":
+            hit.x -= hit.speed;
+            break;
+          case "right3":
+            hit.x += hit.speed;
+            break;
+          case "down4":
+            hit.y += hit.speed;
+            break;
+          case "up4":
+            hit.y -= hit.speed;
+            break;
+          case "left4":
+            hit.x -= hit.speed;
+            break;
+          case "right4":
             hit.x += hit.speed;
             break;
         }

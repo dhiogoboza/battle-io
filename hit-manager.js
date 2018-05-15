@@ -40,7 +40,7 @@ HitManager.prototype.addHit = function (player) {
   if (hit.subtype == "range") {
     hit.direction = player.direction;
     hit.speed = 10;
-    console.log("criou ranged hit");
+    //console.log("criou ranged hit");
   }
   
   this.hits[hit.id] = hit;

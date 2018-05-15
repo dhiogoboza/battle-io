@@ -718,6 +718,7 @@ module.exports.run = function (worker) {
         lastAttackDelay: -5,
         health: heroConfig.baseHealth,
         attackStep: 0,
+        walkerStep: 0,
         x: startingPos.x,
         y: startingPos.y,
         diam: heroConfig.diameter,

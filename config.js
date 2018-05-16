@@ -100,7 +100,7 @@ module.exports = {
       hit: "melee",
       radius: 10, // radius from hit
       damage: 5,
-      diameter: 45,
+      diameter: 100,
       mass: 20
     },
     { // hero 1
@@ -108,7 +108,7 @@ module.exports = {
       hit: "melee",
       radius: 10, // radius from hit
       damage: 15,
-      diameter: 45,
+      diameter: 100,
       mass: 20
     },
     { // hero 2
@@ -116,7 +116,7 @@ module.exports = {
       hit: "range",
       radius: 5, // radius from hit
       damage: 5,
-      diameter: 45,
+      diameter: 100,
       mass: 20
     }
   ]
@@ -135,6 +135,8 @@ var privateProps = {
   group: true,
   version: true,
   external: true,
+  iddle: true,
+  auxAttackStep: true,
   lastAttackDelay: true
 };
 

@@ -267,7 +267,11 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
     } else {
       moveSpeed = config.PLAYER_DEFAULT_MOVE_SPEED;
     }
-
+    
+    //if (player.type == 'player' && 'bot' != player.subtype) {
+        //console.log("playerOp: " + playerOp);
+    //}
+    
     if (playerOp) {
       var movementVector = {x: 0, y: 0};
       var movedHorizontally = false;
@@ -276,104 +280,43 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
 
       if (playerOp.u) {
         movementVector.y = -moveSpeed;
-        switch(player.walkerStep){
-          case 0:
-            player.direction = 'up1';
-            break;
-          case 1:
-            player.direction = 'up2';
-            break;
-          case 2:
-            player.direction = 'up3';
-            break;
-          case 3:
-            player.direction = 'up4';
-            break;
-          break;
-        }
+        player.direction = 'up' + player.walkerStep;
         movedVertically = true;
       }
+      
       if (playerOp.d) {
         movementVector.y = moveSpeed;
-        switch(player.walkerStep){
-          case 0:
-            player.direction = 'down1';
-            break;
-          case 1:
-            player.direction = 'down2';
-            break;
-          case 2:
-            player.direction = 'down3';
-            break;
-          case 3:
-            player.direction = 'down4';
-            break;
-          break;
-        }
+        player.direction = 'down' + player.walkerStep;
         movedVertically = true;
       }
+      
       if (playerOp.r) {
         movementVector.x = moveSpeed;
-        switch(player.walkerStep){
-          case 0:
-            player.direction = 'right1';
-            break;
-          case 1:
-            player.direction = 'right2';
-            break;
-          case 2:
-            player.direction = 'right3';
-            break;
-          case 3:
-            player.direction = 'right4';
-            break;
-          break;
-        }
+        player.direction = 'right' + player.walkerStep;
         movedHorizontally = true;
       }
+      
       if (playerOp.l) {
         movementVector.x = -moveSpeed;
-        switch(player.walkerStep){
-          case 0:
-            player.direction = 'left1';
-            break;
-          case 1:
-            player.direction = 'left2';
-            break;
-          case 2:
-            player.direction = 'left3';
-            break;
-          case 3:
-            player.direction = 'left4';
-            break;
-          break;
-        }
+        player.direction = 'left' + player.walkerStep;
         movedHorizontally = true;
       }
-
-      // attack
-      //if (player.type == 'player' && 'bot' != player.subtype) {
-        //console.log(player.attackStep);
-      //}
       
       if (playerOp.a && player.lastAttackDelay === 0) {
-        //attack = true;
         var hit = self.hitManager.addHit(player);
         if (hit) {
           hits[hit.id] = hit;
-          player.attackStep = 5;
+          player.auxAttackStep = 13;
           player.lastAttackDelay = -10;
         }
-        //console.log(hits);
       }
-
+          
       if (movedHorizontally || movedVertically) {
-        if(player.walkerStep<3){
+        if (player.walkerStep < 4) {
           player.walkerStep++;
-        }else{
-          player.walkerStep=0;
+        } else {
+          player.walkerStep = 1;
         }
-        //console.log(player.walkerStep);
       }
 
       if (movedHorizontally && movedVertically) {
@@ -383,16 +326,29 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
 
       player.x += movementVector.x;
       player.y += movementVector.y;
-      player.attack = "";//attack ? "Attack" : "";
+      player.attack = "";
       
-      //if (player.type == 'player' && 'bot' != player.subtype) {
-        //console.log(player.type + "[" + player.name + "]: " + player.heroId)
-      //}
+      player.iddle = 0;
+      
+    } else {
+      // Reset player walking state
+      if (player.iddle < 10) {
+        player.iddle++;
+      } else if (player.iddle === 10) {
+        if (player.walkerStep !== 1) {
+          player.walkerStep = 1;
+          player.direction = player.direction.substring(0, player.direction.length - 1) + "1";
+        }
+        
+        player.iddle = 11;
+      }
     }
     
-    if (player.attackStep > 0) {
-      player.attackStep--;
-    } else if (player.attackStep === 0) {
+    if (player.auxAttackStep > 0) {
+      player.auxAttackStep--;
+      player.attackStep = (player.auxAttackStep / 3) | 0;
+    } else if (player.auxAttackStep === 0) {
+      player.auxAttackStep = -1;
       player.attackStep = -1;
       self.hitManager.removeHit("hit-" + player.id);
     } else if (player.lastAttackDelay < 0) {
@@ -474,170 +430,74 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
     
     if (!player) {
       //TODO: if player not found remove hit
-    }
-    
-    switch (hit.subtype) {
-      case "melee":
-        var player_r = Math.round(player.diam / 2);
-        switch (player.direction) {
-          case "down1":
-            hit.y = player.y + player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "up1":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "left1":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player.diam;
-            break;
-          case "right1":
-            hit.y = player.y - player_r;
-            hit.x = player.x - 0;
-            break;
-          case "down2":
-            hit.y = player.y + player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "up2":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "left2":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player.diam;
-            break;
-          case "right2":
-            hit.y = player.y - player_r;
-            hit.x = player.x - 0;
-            break;
-          case "down3":
-            hit.y = player.y + player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "up3":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "left3":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player.diam;
-            break;
-          case "right3":
-            hit.y = player.y - player_r;
-            hit.x = player.x - 0;
-            break;
-          case "down4":
-            hit.y = player.y + player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "up4":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player_r;
-            break;
-          case "left4":
-            hit.y = player.y - player_r;
-            hit.x = player.x - player.diam;
-            break;
-          case "right4":
-            hit.y = player.y - player_r;
-            hit.x = player.x - 0;
-            break;
-        }
-        break;
-      case "range":
-        switch (hit.direction) {
-          case "down":
-            hit.y += hit.speed;
-            break;
-          case "up":
-            hit.y -= hit.speed;
-            break;
-          case "left":
-            hit.x -= hit.speed;
-            break;
-          case "right":
-            hit.x += hit.speed;
-            break;
-          case "down1":
-            hit.y += hit.speed;
-            break;
-          case "up1":
-            hit.y -= hit.speed;
-            break;
-          case "left1":
-            hit.x -= hit.speed;
-            break;
-          case "right1":
-            hit.x += hit.speed;
-            break;
-          case "down2":
-            hit.y += hit.speed;
-            break;
-          case "up2":
-            hit.y -= hit.speed;
-            break;
-          case "left2":
-            hit.x -= hit.speed;
-            break;
-          case "right2":
-            hit.x += hit.speed;
-            break;
-          case "down3":
-            hit.y += hit.speed;
-            break;
-          case "up3":
-            hit.y -= hit.speed;
-            break;
-          case "left3":
-            hit.x -= hit.speed;
-            break;
-          case "right3":
-            hit.x += hit.speed;
-            break;
-          case "down4":
-            hit.y += hit.speed;
-            break;
-          case "up4":
-            hit.y -= hit.speed;
-            break;
-          case "left4":
-            hit.x -= hit.speed;
-            break;
-          case "right4":
-            hit.x += hit.speed;
-            break;
-        }
-        
-        if (hit.x < 0 || hit.x > config.WORLD_WIDTH || hit.y < 0 || hit.y > config.WORLD_HEIGHT) {
-          self.hitManager.removeHit(hit.id);
-          delete hits[hitId];
-        }
-        
-        break;
-    }
-    
-    var hitHitArea = self.generateHitArea(hit);
-    
-    playerTree.remove(player.hitArea);
-    var hitList = playerTree.search(hitHitArea);
-    playerTree.insert(player.hitArea);
-    
-    if (hitList.length) {
-      var randomIndex = Math.floor(Math.random() * hitList.length);
-      var affectedPlayer = hitList[randomIndex].target;
+    } else {
+      switch (hit.subtype) {
+        case "melee":
+          var player_r = Math.round(player.diam / 2);
+          var d = player.direction.substring(0, player.direction.length - 1);
+          switch (d) {
+            case "down":
+              hit.y = player.y + player_r;
+              hit.x = player.x - player_r;
+              break;
+            case "up":
+              hit.y = player.y - player_r;
+              hit.x = player.x - player_r;
+              break;
+            case "left":
+              hit.y = player.y - player_r;
+              hit.x = player.x - player.diam;
+              break;
+            case "right":
+              hit.y = player.y - player_r;
+              hit.x = player.x - 0;
+              break;
+          }
+          break;
+        case "range":
+          switch (hit.direction) {
+            case "down":
+              hit.y += hit.speed;
+              break;
+            case "up":
+              hit.y -= hit.speed;
+              break;
+            case "left":
+              hit.x -= hit.speed;
+              break;
+            case "right":
+              hit.x += hit.speed;
+              break;
+          }
+          
+          if (hit.x < 0 || hit.x > config.WORLD_WIDTH || hit.y < 0 || hit.y > config.WORLD_HEIGHT) {
+            self.hitManager.removeHit(hit.id);
+            delete hits[hitId];
+          }
+          
+          break;
+      }
       
-      affectedPlayer.health -= hit.damage;
+      var hitHitArea = self.generateHitArea(hit);
       
-      if (affectedPlayer.health <= 0) {
-        affectedPlayer.health = 0;
-        // kill player
-        self.util.removeByVal(playerIds, affectedPlayer.id);
-        delete players[affectedPlayer.id];
+      playerTree.remove(player.hitArea);
+      var hitList = playerTree.search(hitHitArea);
+      playerTree.insert(player.hitArea);
+      
+      if (hitList.length) {
+        var randomIndex = Math.floor(Math.random() * hitList.length);
+        var affectedPlayer = hitList[randomIndex].target;
+        
+        affectedPlayer.health -= hit.damage;
+        
+        if (affectedPlayer.health <= 0) {
+          affectedPlayer.health = 0;
+          // kill player
+          self.util.removeByVal(playerIds, affectedPlayer.id);
+          delete players[affectedPlayer.id];
+        }
       }
     }
-    
     
   });
   

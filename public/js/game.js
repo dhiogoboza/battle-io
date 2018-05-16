@@ -21,7 +21,7 @@ window.onload = function () {
         hit: "melee",
         radius: 10, // radius from hit
         damage: 5,
-        diameter: 45,
+        diameter: 100,
         mass: 20
       },
       { // hero 1
@@ -29,7 +29,7 @@ window.onload = function () {
         hit: "melle",
         radius: 10, // radius from hit
         damage: 5,
-        diameter: 45,
+        diameter: 100,
         mass: 20
       },
       { // hero 2
@@ -37,7 +37,7 @@ window.onload = function () {
         hit: "range",
         radius: 10, // radius from hit
         damage: 5,
-        diameter: 45,
+        diameter: 100,
         mass: 20
       }
     ];
@@ -169,21 +169,27 @@ window.onload = function () {
 
       game.load.image('background', BACKGROUND_TEXTURE);
 
-      // convesão do sprites
-      var count = HEROS_OPTIONS.length;
+      // Initialize sprites
+      var spriteId, spritePath;
       var sprites = ["left","right","up", "down"];
-      for (var i = 0; i < count; i++) {
+      for (var i = 0; i < HEROS_OPTIONS.length; i++) {
         for (var j = 0; j < sprites.length; j++) {
-          for(var k =1; k<5; k++){
-            var nameSprite=i + '-' + sprites[j]+k;
-            var spritePath="heros/"+i+"/" + sprites[j]+k;
-            game.load.image(nameSprite, "img/sprites/"+spritePath+".png");
-            console.log(nameSprite+ " = " + "img/sprites/"+spritePath+".png");
-            //ataques 
-            nameSprite=i + '-hit' + sprites[j]+k;
-            spritePath="heros/"+i+"/hit" + sprites[j]+k;
-            game.load.image(nameSprite, "img/sprites/"+spritePath+".png");
+          for (var k = 1; k < 5; k++) {
+            spriteId = i + '-' + sprites[j] + k;
+            spritePath = "heros/" + i + "/" + sprites[j] + k;
+            game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
 
+            // Hits 
+            spriteId = i + '-hit' + sprites[j] + k;
+            spritePath = "heros/" + i + "/hits/" + sprites[j] + k;
+            game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
+          }
+          
+          // Shots
+          if (HEROS_OPTIONS[i].hit == "range") {
+            spriteId = i + '-shot' + sprites[j];
+            spritePath = "heros/" + i + "/shots/" + sprites[j];
+            game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
           }
         }
       }
@@ -191,7 +197,6 @@ window.onload = function () {
       game.load.image('grass-2', grassTextures[2]);
       game.load.image('grass-3', grassTextures[3]);
       game.load.image('grass-4', grassTextures[4]);
-      
     }
 
     function handleCellData(stateList) {
@@ -236,11 +241,16 @@ window.onload = function () {
       if (!user.direction) {
         user.direction = 'down1';
       }
-      
-      var attack = user.attackStep != -1? "-hit":'-';
-      user.sprite.loadTexture(user.heroId + attack + user.direction);
+      var sprite;
+      if (user.attackStep > 0) {
+        // FIXME: do not split strings
+        sprite = user.heroId + "-hit" + user.direction.substring(0, user.direction.length - 1) + user.attackStep;
+      } else {
+        sprite = user.heroId + "-" + user.direction;
+      }
+      user.sprite.loadTexture(sprite);
       user.label.alignTo(user.sprite, Phaser.BOTTOM_CENTER, 0, 10);
-      
+
       if (user.lastHealth != user.health) {
         var lifePercentage = user.health / HEROS_OPTIONS[user.heroId].baseHealth;
         user.life.width = Math.round(user.sprite.width * lifePercentage);
@@ -365,10 +375,8 @@ window.onload = function () {
         user.attackStep = userData.attackStep;
         user.health = userData.health;
         
-        if (userData.attack) {
-          user.attack = userData.attack;
-        } else {
-          user.attack = '';
+        if (user.id == playerId) {
+          //console.log("userData direction: " + userData.direction);
         }
         
         moveUser(userData.id, userData.x, userData.y);
@@ -418,8 +426,6 @@ window.onload = function () {
             
             break;
           case "range":
-            // TODO: add hit to shots list and draw it
-            console.log("add shot");
             var hit = shots[hitData.id];
             if (hit) {
               hit.sprite.x = hitData.x;

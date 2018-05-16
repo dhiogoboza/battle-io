@@ -41,8 +41,7 @@ BotManager.prototype.addBot = function (options) {
   if (!options) {
     options = {};
   }
-  var diameter = options.diam || this.botDefaultDiameter;
-  var radius = Math.round(diameter / 2);
+  
   var botId = uuid.v4();
 
   var bot = {
@@ -57,8 +56,12 @@ BotManager.prototype.addBot = function (options) {
     score: options.score || 0,
     speed: options.speed == null ? this.botMoveSpeed : options.speed,
     mass: options.mass || this.botMass,
-    diam: diameter,
-    attackStep: 0,
+    diam: config.HEROS_OPTIONS[0].diameter,
+    direction: "down1",
+    walkerStep: 1,
+    attackStep: -1,
+    auxAttackStep: -1,
+    iddle: 0,
     changeDirProb: this.botChangeDirectionProbability,
     op: {}
   };
@@ -66,6 +69,7 @@ BotManager.prototype.addBot = function (options) {
     bot.x = options.x;
     bot.y = options.y;
   } else {
+    var radius = Math.round(bot.diam / 2);
     var position = this.generateRandomPosition(radius);
     if (options.x) {
       bot.x = options.x;

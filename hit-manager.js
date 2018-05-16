@@ -38,9 +38,8 @@ HitManager.prototype.addHit = function (player) {
   };
   
   if (hit.subtype == "range") {
-    hit.direction = player.direction;
+    hit.direction = player.direction.substring(0, player.direction.length - 1);
     hit.speed = 10;
-    //console.log("criou ranged hit");
   }
   
   this.hits[hit.id] = hit;

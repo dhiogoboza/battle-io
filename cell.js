@@ -303,7 +303,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.a && player.lastAttackDelay === 0) {
-        var hit = self.hitManager.addHit(player);
+        var hit = self.hitManager.addHit(player,0);
         if (hit) {
           hits[hit.id] = hit;
           player.auxAttackStep = 13;

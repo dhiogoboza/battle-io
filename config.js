@@ -97,29 +97,46 @@ module.exports = {
   HEROS_OPTIONS: [
     { // 0 bot
       baseHealth: 100,
-      hit: "melee",
       radius: 10, // radius from hit
-      damage: 5,
       diameter: 100,
       mass: 20
     },
     { // hero 1
       baseHealth: 100,
-      hit: "melee",
       radius: 10, // radius from hit
-      damage: 15,
       diameter: 100,
-      mass: 20
+      mass: 20,
+      skills: [
+        {
+          type:'melle',
+          damage: 15
+        },
+        {
+          type:'range',
+          shotSpeed:15,
+          shotRange:500  
+        }
+      ]
+
     },
     { // hero 2
       baseHealth: 100,
-      hit: "range",
       radius: 5, // radius from hit
-      damage: 5,
+      skills: [
+        {
+          type:'range',
+          damage: 15,
+          shotSpeed:15,
+          shotRange:500
+        },
+        {
+          type:'range',
+          shotSpeed:15,
+          shotRange:500  
+        }
+      ],
       diameter: 100,
-      mass: 20,
-      shotSpeed:15,
-      shotRange:500
+      mass: 20
         
     }
   ]

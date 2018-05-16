@@ -38,8 +38,11 @@ HitManager.prototype.addHit = function (player) {
   };
   
   if (hit.subtype == "range") {
+    hit.startX = hit.x;
+    hit.startY = hit.y;
     hit.direction = player.direction.substring(0, player.direction.length - 1);
-    hit.speed = 10;
+    hit.speed = heroConfig.shotSpeed;
+    hit.range = heroConfig.shotRange;
   }
   
   this.hits[hit.id] = hit;

@@ -374,11 +374,7 @@ window.onload = function () {
         user.heroId = userData.heroId;
         user.attackStep = userData.attackStep;
         user.health = userData.health;
-        
-        if (user.id == playerId) {
-          //console.log("userData direction: " + userData.direction);
-        }
-        
+
         moveUser(userData.id, userData.x, userData.y);
       } else {
         createUserSprite(userData);
@@ -455,8 +451,11 @@ window.onload = function () {
           }
         break;
         case "range":
-          // TODO: remove shot from shots list
-          console.log("remove shot");
+          var shotToRemove = shots[hit.id];
+          if (shotToRemove) {
+            shotToRemove.sprite.destroy();
+            delete shots[shotToRemove.id];
+          }
         break;
       }
     }

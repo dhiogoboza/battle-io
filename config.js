@@ -13,7 +13,7 @@ module.exports = {
   // and world size).
   //WORLD_CELL_WIDTH: 1000,
   //WORLD_CELL_HEIGHT: 4000,
-  WORLD_CELL_WIDTH: 500,
+  WORLD_CELL_WIDTH: 2000,
   WORLD_CELL_HEIGHT: 2000,
   /*
     The WORLD_CELL_OVERLAP_DISTANCE allows players/states from two different
@@ -117,7 +117,10 @@ module.exports = {
       radius: 5, // radius from hit
       damage: 5,
       diameter: 100,
-      mass: 20
+      mass: 20,
+      shotSpeed:15,
+      shotRange:500
+        
     }
   ]
 };

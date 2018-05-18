@@ -15,6 +15,12 @@ window.onload = function () {
     coins = {};
     shots = {};
     
+    var textStyle = {
+      font: '16px Arial',
+      fill: '#FFFFFF',
+      align: 'center'
+    };
+    
     var HEROS_OPTIONS = [
       { // 0 bot
         baseHealth: 100,
@@ -202,6 +208,10 @@ window.onload = function () {
     function handleCellData(stateList) {
       stateList.forEach(function (state) {
         if (state.type == 'player') {
+          if (state.id == playerId){
+            console.log(state.health);
+          }
+          
           updateUser(state);
         } else if (state.type == 'coin') {
           if (state.delete) {
@@ -296,13 +306,6 @@ window.onload = function () {
       user.direction = "down1";
       user.health = userData.health;
       user.lastHealth = user.health;
-
-      var textStyle = {
-        font: '16px Arial',
-        fill: '#666666',
-        align: 'center'
-      };
-      
       user.label = game.add.text(0, 0, user.name, textStyle);
       user.label.anchor.set(0.5);
 
@@ -516,6 +519,7 @@ window.onload = function () {
       }
 
       function removeAllUserSprites() {
+        console.log("disconnected");
         for (var i in users) {
           if (users.hasOwnProperty(i)) {
             removeUser(users[i]);

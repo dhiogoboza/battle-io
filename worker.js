@@ -151,7 +151,8 @@ module.exports.run = function (worker) {
       cellIndex: cellIndex,
       cellData: cellData[cellIndex],
       cellBounds: channelGrid.getCellBounds(cellIndex),
-      worker: worker
+      worker: worker,
+      stateManager: stateManager
     }, util);
 
     channelGrid.watchCellAtIndex(CHANNEL_INBOUND_CELL_PROCESSING, cellIndex, gridCellDataHandler.bind(null, cellIndex));
@@ -683,7 +684,7 @@ module.exports.run = function (worker) {
       }
     });
   }
-
+  
   setInterval(processInputStates, WORLD_UPDATE_INTERVAL);
 
   /*
@@ -728,8 +729,6 @@ module.exports.run = function (worker) {
         mass: heroConfig.mass,
         score: 0
       };
-      
-      console.log(playerOptions.heroId)
 
       socket.player = stateManager.create(player);
 

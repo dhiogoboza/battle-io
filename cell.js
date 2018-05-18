@@ -303,7 +303,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.a && player.lastAttackDelay === 0) {
-        var hit = self.hitManager.addHit(player);
+        var hit = self.hitManager.addHit(player,0);
         if (hit) {
           hits[hit.id] = hit;
           player.auxAttackStep = 13;
@@ -469,10 +469,11 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
               hit.x += hit.speed;
               break;
           }
-          
-          if (hit.x < 0 || hit.x > config.WORLD_WIDTH || hit.y < 0 || hit.y > config.WORLD_HEIGHT) {
+
+          if (hit.x < 0 || hit.x > config.WORLD_WIDTH || hit.y < 0 || hit.y > config.WORLD_HEIGHT ||
+              hit.x < hit.startX-hit.range || hit.x > hit.startX+hit.range ||
+              hit.y < hit.startY-hit.range || hit.y > hit.startY+hit.range) {
             self.hitManager.removeHit(hit.id);
-            delete hits[hitId];
           }
           
           break;

@@ -21,16 +21,17 @@ var HitManager = function (options) {
   this.hitCount = 0;
 };
 
-HitManager.prototype.addHit = function (player) {
+HitManager.prototype.addHit = function (player,skillIndex) {
   var heroConfig = config.HEROS_OPTIONS[player.heroId];
   var hitId = heroConfig.hit === "melee" ? "hit-" + player.id : uuid.v4();
   var position = new SAT.Vector(player.x, player.y);
+  var hitConfig = heroConfig.skills[skillIndex];
   var hit = {
     id: hitId,
     type: 'hit',
     playerId: player.id,
-    subtype: heroConfig.hit,
-    damage: heroConfig.damage,
+    subtype: hitConfig.type,
+    damage: hitConfig.damage,
     step: 0,
     x: position.x,
     y: position.y,
@@ -38,8 +39,11 @@ HitManager.prototype.addHit = function (player) {
   };
   
   if (hit.subtype == "range") {
+    hit.startX = hit.x;
+    hit.startY = hit.y;
     hit.direction = player.direction.substring(0, player.direction.length - 1);
-    hit.speed = 10;
+    hit.speed = hitConfig.shotSpeed;
+    hit.range = hitConfig.shotRange;
   }
   
   this.hits[hit.id] = hit;

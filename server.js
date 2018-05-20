@@ -49,7 +49,6 @@ var masterControllerPath = argv.mc || process.env.SOCKETCLUSTER_MASTER_CONTROLLE
 
 var start = function () {
   var socketCluster = new SocketCluster(options);
-
   if (masterControllerPath) {
     var masterController = require(masterControllerPath);
     masterController.run(socketCluster);

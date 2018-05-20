@@ -26,7 +26,7 @@ window.onload = function () {
       },
       { // hero 1
         baseHealth: 100,
-        hit: "melle",
+        hit: "range",
         radius: 10, // radius from hit
         damage: 5,
         diameter: 100,
@@ -60,11 +60,11 @@ window.onload = function () {
    
 
     // Map the score value to the texture.
-    var grassTextures = {
-      1: 'img/grass-1.gif',
-      2: 'img/grass-2.gif',
-      3: 'img/grass-3.gif',
-      4: 'img/grass-4.gif'
+    var orbTextures = {
+      1: 'img/orb-1.png',
+      2: 'img/orb-2.png',
+      3: 'img/orb-3.png',
+      4: 'img/orb-4.png'
     };
     
     // 1 means no smoothing. 0.1 is quite smooth.
@@ -156,7 +156,10 @@ window.onload = function () {
         down: game.input.keyboard.addKey(Phaser.Keyboard.DOWN),
         right: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
         left: game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
-        attack: game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+        attack: game.input.keyboard.addKey(Phaser.Keyboard.Z),
+        skill1: game.input.keyboard.addKey(Phaser.Keyboard.X),
+        skill2: game.input.keyboard.addKey(Phaser.Keyboard.C),
+        skill3: game.input.keyboard.addKey(Phaser.Keyboard.V)
       };
       
       wasd = {
@@ -164,14 +167,23 @@ window.onload = function () {
         down: game.input.keyboard.addKey(Phaser.Keyboard.S),
         right: game.input.keyboard.addKey(Phaser.Keyboard.D),
         left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-        attack: game.input.keyboard.addKey(Phaser.Keyboard.K)
+        attack: game.input.keyboard.addKey(Phaser.Keyboard.U),
+        skill1: game.input.keyboard.addKey(Phaser.Keyboard.I),
+        skill2: game.input.keyboard.addKey(Phaser.Keyboard.O),
+        skill3: game.input.keyboard.addKey(Phaser.Keyboard.P)
       };
 
-      game.load.image('background', BACKGROUND_TEXTURE);
+      game.load.image('background', BACKGROUND_TEXTURE);     
+      game.load.audio('music', 'music/Star Commander1.wav');
+      game.load.image('avatar', 'img/avatar1.png');
+      game.load.image('skill0', 'img/skill0.png');
+      game.load.image('skill1', 'img/skill1.png');
+      game.load.image('skill2', 'img/skill2.png');
+      game.load.image('skilln', 'img/skilln.png');
 
       // Initialize sprites
       var spriteId, spritePath;
-      var sprites = ["left","right","up", "down"];
+      var sprites = ["left","right","up", "down","dashdown","dashup","dashleft","dashright"];
       for (var i = 0; i < HEROS_OPTIONS.length; i++) {
         for (var j = 0; j < sprites.length; j++) {
           for (var k = 1; k < 5; k++) {
@@ -193,10 +205,10 @@ window.onload = function () {
           }
         }
       }
-      game.load.image('grass-1', grassTextures[1]);
-      game.load.image('grass-2', grassTextures[2]);
-      game.load.image('grass-3', grassTextures[3]);
-      game.load.image('grass-4', grassTextures[4]);
+      game.load.image('orb-1', orbTextures[1]);
+      game.load.image('orb-2', orbTextures[2]);
+      game.load.image('orb-3', orbTextures[3]);
+      game.load.image('orb-4', orbTextures[4]);
     }
 
     function handleCellData(stateList) {
@@ -396,7 +408,7 @@ window.onload = function () {
         var coin = coinData;
         coins[coinData.id] = coin;
         coin.sprite = createTexturedSprite({
-          texture: 'grass-' + (coinData.t || '1')
+          texture: 'orb-' + (coinData.t || '1')
         });
         coin.sprite.x = coinData.x;
         coin.sprite.y = coinData.y;
@@ -430,7 +442,7 @@ window.onload = function () {
               hit = hitData;
               shots[hitData.id] = hit;
               hit.sprite = createTexturedSprite({
-                texture: users[hitData.playerId].heroId +  "-shot" + hit.direction
+                texture: users[hitData.playerId].heroId +  "-shot" + hit.direction//aki o erro que nao renderiza shot do player 2
               });
               hit.sprite.x = hitData.x;
               hit.sprite.y = hitData.y;
@@ -482,10 +494,10 @@ window.onload = function () {
           break;
       }*/
     }
-
+    var music;
     function create() {
       var w,h;
-      
+      music = game.add.audio('music');
       if (WORLD_WIDTH < window.innerWidth && WORLD_HEIGHT < window.innerHeight) {
         w = WORLD_WIDTH;
         h = WORLD_HEIGHT;
@@ -495,6 +507,36 @@ window.onload = function () {
       }
     
       background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
+      //interface //aki
+      avatar = game.add.sprite(0,570,'avatar');
+      avatar.fixedToCamera=true;
+      skill0 = game.add.sprite(110,570,'skill0');
+      skill0.fixedToCamera=true;
+      skill1 = game.add.sprite(170,570,'skill1');
+      skill1.fixedToCamera=true;
+      skill2 = game.add.sprite(230,570,'skill2');
+      skill2.fixedToCamera=true;
+      /*
+      if(player.score>9){
+        skill0 = game.add.sprite(110,600,'skill0');
+        skill0.fixedToCamera=true;
+        skill1 = game.add.sprite(170,600,'skill1');
+        skill1.fixedToCamera=true;
+        skill2 = game.add.sprite(230,600,'skill2');
+        skill2.fixedToCamera=true;
+      }
+      if(player.score>2){
+        skill1 = game.add.sprite(170,600,'skilln');
+        skill1.fixedToCamera=true;
+        skill2 = game.add.sprite(230,600,'skill2');
+        skill2.fixedToCamera=true;
+      }else{
+        skill1 = game.add.sprite(170,600,'skilln');
+        skill1.fixedToCamera=true;
+        skill2 = game.add.sprite(230,600,'skilln');
+        skill2.fixedToCamera=true;
+      }*/
+      
       game.time.advancedTiming = true;
       
       gameContainer.style.width = w + "px";
@@ -556,6 +598,18 @@ window.onload = function () {
         playerOp.a = 1;
         didAction = true;
       }
+      if (keys.skill1.isDown || wasd.skill1.isDown) {
+        playerOp.s1 = 1;
+        didAction = true;
+      }
+      if (keys.skill2.isDown || wasd.skill2.isDown) {
+        playerOp.s2 = 1;
+        didAction = true;
+      }
+      if (keys.skill3.isDown || wasd.skill3.isDown) {
+        playerOp.s3 = 1;
+        didAction = true;
+      }
       if (didAction && Date.now() - lastActionTime >= USER_INPUT_INTERVAL) {
         lastActionTime = Date.now();
         // Send the player operations for the server to process.
@@ -569,7 +623,9 @@ window.onload = function () {
       if (ENVIRONMENT == 'dev') {
         game.debug.text('FPS:   ' + game.time.fps, 2, 14, "#00FF00");
         if (player) {
-          game.debug.text('Score: ' + player.score, 2, 30, "#00FF00");
+          game.debug.text('Mana: ' + player.score.toFixed(0) +' % ', 2, 30, "#00FF00");
+          game.debug.text('hp :   ' + player.health, 2, 45, "#00FF00");
+
         }
       }
 

@@ -253,13 +253,12 @@ CellController.prototype.keepPlayerOnGrid = function (player) {
     player.y = config.WORLD_HEIGHT - radius;
   }
 };
-
+var delay=5;
 CellController.prototype.applyPlayerOps = function (playerIds, players, coins, hits) {
   var self = this;
-
   playerIds.forEach(function (playerId) {
     var player = players[playerId];
-
+    
     var playerOp = player.op;
     var moveSpeed;
     if (player.subtype == 'bot') {
@@ -279,30 +278,39 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       //var attack = false;
 
       if (playerOp.u) {
+        delay=5;
         movementVector.y = -moveSpeed;
         player.direction = 'up' + player.walkerStep;
+        player.directionSave='up1';
         movedVertically = true;
       }
       
       if (playerOp.d) {
+        delay=5;
         movementVector.y = moveSpeed;
         player.direction = 'down' + player.walkerStep;
+        player.directionSave='down1';
         movedVertically = true;
       }
       
       if (playerOp.r) {
+        delay=5;
         movementVector.x = moveSpeed;
         player.direction = 'right' + player.walkerStep;
+        player.directionSave='right1';
         movedHorizontally = true;
       }
       
       if (playerOp.l) {
+        delay=5;
         movementVector.x = -moveSpeed;
         player.direction = 'left' + player.walkerStep;
+        player.directionSave='left1';
         movedHorizontally = true;
       }
-      
+      //attack basico
       if (playerOp.a && player.lastAttackDelay === 0) {
+        delay=5;
         var hit = self.hitManager.addHit(player,0);
         if (hit) {
           hits[hit.id] = hit;
@@ -310,8 +318,64 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
           player.lastAttackDelay = -10;
         }
       }
-          
+      //skill 1
+      if (playerOp.s1 && player.lastAttackDelay === 0 && player.score>=10) {
+        delay=5;
+        player.score=player.score-10;
+        var hit = self.hitManager.addHit(player,1);
+        if (hit) {
+          hits[hit.id] = hit;
+          player.auxAttackStep = 13;
+          player.lastAttackDelay = -10;
+        }
+      }
+      //skill2
+      if(playerOp.s2 && player.lastAttackDelay === 0 && player.score>1 && delay%5==0){
+        delay=5;
+        player.score=player.score-0.3;
+        var d = player.direction.substring(0, player.direction.length - 1);
+        if (d=='up') {
+          movementVector.y = - (3*moveSpeed);
+          player.direction = 'dashup'+ player.walkerStep;
+          player.directionSave = 'up1';
+          movedVertically = true;
+        }
+      
+        if (d==='down') {
+          movementVector.y = (3*moveSpeed);
+          player.direction = 'dashdown'+ player.walkerStep;
+          player.directionSave = 'down1';
+          movedVertically = true;
+          for(var i=0;i<1000;i++){for(var j=0;j<1000;j++){}}
+        }
+      
+        if (d==='right') {
+          movementVector.x = (3*moveSpeed);
+          player.direction = 'dashright'+ player.walkerStep;
+          player.directionSave = 'right1';
+          movedHorizontally = true;
+        }
+      
+        if (d==='left') {
+          movementVector.x = -(3*moveSpeed);
+          player.direction = 'dashleft'+ player.walkerStep;
+          player.directionSave = 'left1';
+          movedHorizontally = true;
+        }
+      }
+      //skill3
+      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score>=100 && delay%5==0) {
+        delay=5;
+        player.score=player.score-100;
+        var hit = self.hitManager.addHit(player,2);
+        if (hit) {
+          hits[hit.id] = hit;
+          player.auxAttackStep = 13;
+          player.lastAttackDelay = -100;
+        }
+      }
       if (movedHorizontally || movedVertically) {
+        delay=5;
         if (player.walkerStep < 4) {
           player.walkerStep++;
         } else {
@@ -320,6 +384,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
 
       if (movedHorizontally && movedVertically) {
+        delay=5;
         movementVector.x *= self.diagonalSpeedFactor;
         movementVector.y *= self.diagonalSpeedFactor;
       }
@@ -329,9 +394,10 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       player.attack = "";
       
       player.iddle = 0;
-      
+      delay--;
     } else {
       // Reset player walking state
+      player.direction = player.directionSave;
       if (player.iddle < 10) {
         player.iddle++;
       } else if (player.iddle === 10) {
@@ -342,6 +408,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         
         player.iddle = 11;
       }
+      delay--;
     }
     
     if (player.auxAttackStep > 0) {
@@ -366,7 +433,21 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
     if (player.coinOverlaps) {
       player.coinOverlaps.forEach(function (coin) {
         if (self.testCircleCollision(player, coin).collided) {
-          player.score += coin.v;
+          if(coins[coin.id].t == 2 ){
+            player.health += coin.v;
+            if(player.health>100){
+              player.health=100;
+            }
+          }
+          if(coins[coin.id].t == 4){
+              player.health-=10;
+          }
+          else{
+            player.score += coin.v;
+            if(player.score>100){
+              player.score=100;
+            }
+          }
           self.coinManager.removeCoin(coin.id);
         }
       });
@@ -470,7 +551,7 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
               break;
           }
 
-          if (hit.x < 0 || hit.x > config.WORLD_WIDTH || hit.y < 0 || hit.y > config.WORLD_HEIGHT ||
+          if (hit.x < 20 || hit.x > config.WORLD_WIDTH-20 || hit.y < 20 || hit.y > config.WORLD_HEIGHT-20 ||
               hit.x < hit.startX-hit.range || hit.x > hit.startX+hit.range ||
               hit.y < hit.startY-hit.range || hit.y > hit.startY+hit.range) {
             self.hitManager.removeHit(hit.id);

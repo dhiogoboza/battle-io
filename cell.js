@@ -253,12 +253,12 @@ CellController.prototype.keepPlayerOnGrid = function (player) {
     player.y = config.WORLD_HEIGHT - radius;
   }
 };
-var delay =5;
+var delay = 5;
 CellController.prototype.applyPlayerOps = function (playerIds, players, coins, hits) {
   var self = this;
   playerIds.forEach(function (playerId) {
     var player = players[playerId];
-    
+
     var playerOp = player.op;
     var moveSpeed;
     if (player.subtype == 'bot') {
@@ -281,7 +281,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         delay = 5;
         movementVector.y = -moveSpeed;
         player.direction = 'up' + player.walkerStep;
-        player.directionSave='up1';
+        player.directionSave = 'up1';
         movedVertically = true;
       }
       
@@ -289,7 +289,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         delay = 5;
         movementVector.y = moveSpeed;
         player.direction = 'down' + player.walkerStep;
-        player.directionSave='down1';
+        player.directionSave = 'down1';
         movedVertically = true;
       }
       
@@ -297,7 +297,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         delay = 5;
         movementVector.x = moveSpeed;
         player.direction = 'right' + player.walkerStep;
-        player.directionSave='right1';
+        player.directionSave = 'right1';
         movedHorizontally = true;
       }
       
@@ -305,13 +305,13 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         delay = 5;
         movementVector.x = -moveSpeed;
         player.direction = 'left' + player.walkerStep;
-        player.directionSave='left1';
+        player.directionSave = 'left1';
         movedHorizontally = true;
       }
       
       // Basic attack
       if (playerOp.a && player.lastAttackDelay === 0) {
-        delay =5;
+        delay = 5;
         var hit = self.hitManager.addHit(player,0);
         if (hit) {
           hits[hit.id] = hit;
@@ -321,8 +321,8 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       //skill 1
-      if (playerOp.s1 && player.lastAttackDelay === 0 && player.score>=10) {
-        delay =5;
+      if (playerOp.s1 && player.lastAttackDelay === 0 && player.score >= 10) {
+        delay = 5;
         player.score = player.score-10;
         var hit = self.hitManager.addHit(player,1);
         if (hit) {
@@ -333,27 +333,27 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       //skill2
-      if (playerOp.s2 && player.lastAttackDelay === 0 && player.score>1 && delay%5==0) {
+      if (playerOp.s2 && player.lastAttackDelay === 0 && player.score > 1 && delay%5 == 0) {
         delay = 5;
         player.score = player.score-0.3;
         var d = player.direction.substring(0, player.direction.length - 1);
         
         if (d == 'up') {
-          movementVector.y = - (3*moveSpeed);
+          movementVector.y = - (3 * moveSpeed);
           player.direction = 'dashup'+ player.walkerStep;
           player.directionSave = 'up1';
           movedVertically = true;
         }
       
         if (d === 'down') {
-          movementVector.y = (3*moveSpeed);
+          movementVector.y = (3 * moveSpeed);
           player.direction = 'dashdown' + player.walkerStep;
           player.directionSave = 'down1';
           movedVertically = true;
         }
       
         if (d === 'right') {
-          movementVector.x = (3*moveSpeed);
+          movementVector.x = (3 * moveSpeed);
           player.direction = 'dashright' + player.walkerStep;
           player.directionSave = 'right1';
           movedHorizontally = true;
@@ -518,8 +518,9 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
     } else {
       switch (hit.subtype) {
         case "melee":
-          var player_r = Math.round(player.diam / 2);
+          // FIXME: do not split string
           var d = player.direction.substring(0, player.direction.length - 1);
+          var player_r = Math.round(player.diam / 2);
           switch (d) {
             case "down":
               hit.y = player.y + player_r;
@@ -579,9 +580,12 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
         if (affectedPlayer.health <= 0) {
           affectedPlayer.health = 0;
           // kill player
-          //self.util.removeByVal(playerIds, affectedPlayer.id);
-          //delete players[affectedPlayer.id];
-          self.options.stateManager.delete(affectedPlayer);
+          
+          if (affectedPlayer.subtype != "bot") {
+            self.options.stateManager.delete(affectedPlayer);
+          } else {
+            self.botManager.removeBot(affectedPlayer.id);
+          }
         }
         
         self.hitManager.removeHit(hit.id);

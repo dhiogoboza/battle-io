@@ -137,13 +137,15 @@ module.exports = {
           type:'range',
           damage: 15,
           shotSpeed:15,
-          shotRange:500
+          shotRange:500,
+          radius: 50
         },
         {
           type:'range',
           damage: 15,
           shotSpeed:15,
-          shotRange:500  
+          shotRange:500,
+          radius: 50
         }
       ],
       diameter: 100,

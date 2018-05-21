@@ -721,6 +721,7 @@ module.exports.run = function (worker) {
         attackStep: -1,
         auxAttackStep: -1,
         walkerStep: 1,
+        delay: 5,
         iddle: 0,
         direction: "down1",
         directionSave:'down1',

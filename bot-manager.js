@@ -58,6 +58,7 @@ BotManager.prototype.addBot = function (options) {
     mass: options.mass || this.botMass,
     diam: config.HEROS_OPTIONS[0].diameter,
     direction: "down1",
+    delay: 5,
     walkerStep: 1,
     attackStep: -1,
     auxAttackStep: -1,

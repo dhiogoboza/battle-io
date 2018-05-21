@@ -253,7 +253,7 @@ CellController.prototype.keepPlayerOnGrid = function (player) {
     player.y = config.WORLD_HEIGHT - radius;
   }
 };
-var delay = 5;
+
 CellController.prototype.applyPlayerOps = function (playerIds, players, coins, hits) {
   var self = this;
   playerIds.forEach(function (playerId) {
@@ -278,7 +278,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       var direction = player.direction;
 
       if (playerOp.u) {
-        delay = 5;
+        player.delay = 5;
         movementVector.y = -moveSpeed;
         player.direction = 'up' + player.walkerStep;
         player.directionSave = 'up1';
@@ -286,7 +286,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.d) {
-        delay = 5;
+        player.delay = 5;
         movementVector.y = moveSpeed;
         player.direction = 'down' + player.walkerStep;
         player.directionSave = 'down1';
@@ -294,7 +294,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.r) {
-        delay = 5;
+        player.delay = 5;
         movementVector.x = moveSpeed;
         player.direction = 'right' + player.walkerStep;
         player.directionSave = 'right1';
@@ -302,7 +302,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.l) {
-        delay = 5;
+        player.delay = 5;
         movementVector.x = -moveSpeed;
         player.direction = 'left' + player.walkerStep;
         player.directionSave = 'left1';
@@ -311,7 +311,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       
       // Basic attack
       if (playerOp.a && player.lastAttackDelay === 0) {
-        delay = 5;
+        player.delay = 5;
         var hit = self.hitManager.addHit(player,0);
         if (hit) {
           hits[hit.id] = hit;
@@ -322,7 +322,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       
       //skill 1
       if (playerOp.s1 && player.lastAttackDelay === 0 && player.score >= 10) {
-        delay = 5;
+        player.delay = 5;
         player.score = player.score-10;
         var hit = self.hitManager.addHit(player,1);
         if (hit) {
@@ -333,8 +333,8 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       //skill2
-      if (playerOp.s2 && player.lastAttackDelay === 0 && player.score > 1 && delay%5 == 0) {
-        delay = 5;
+      if (playerOp.s2 && player.lastAttackDelay === 0 && player.score > 1 && player.delay % 5 == 0) {
+        player.delay = 5;
         player.score = player.score-0.3;
         var d = player.direction.substring(0, player.direction.length - 1);
         
@@ -368,8 +368,8 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       //skill3
-      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 100 && delay%5 == 0) {
-        delay = 5;
+      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 100 && player.delay % 5 == 0) {
+        player.delay = 5;
         player.score = player.score-100;
         var hit = self.hitManager.addHit(player, 2);
         if (hit) {
@@ -379,7 +379,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         }
       }
       if (movedHorizontally || movedVertically) {
-        delay = 5;
+        player.delay = 5;
         if (player.walkerStep < 4) {
           player.walkerStep++;
         } else {
@@ -388,7 +388,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
 
       if (movedHorizontally && movedVertically) {
-        delay = 5;
+        player.delay = 5;
         movementVector.x *= self.diagonalSpeedFactor;
         movementVector.y *= self.diagonalSpeedFactor;
       }
@@ -398,7 +398,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       player.attack = "";
       
       player.iddle = 0;
-      delay--;
+      player.delay--;
     } else {
       // Reset player walking state
       player.direction = player.directionSave;
@@ -412,7 +412,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         
         player.iddle = 11;
       }
-      delay--;
+      player.delay--;
     }
     
     if (player.auxAttackStep > 0) {

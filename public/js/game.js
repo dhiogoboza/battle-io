@@ -271,7 +271,7 @@ window.onload = function () {
 
       if (user.lastHealth != user.health) {
         var lifePercentage = user.health / HEROS_OPTIONS[user.heroId].baseHealth;
-        user.life.width = Math.round(user.sprite.width * lifePercentage);
+        user.life.width = Math.round(user.lifeWidth * lifePercentage);
       }
     }
 
@@ -342,9 +342,10 @@ window.onload = function () {
       lifeGraphics.drawRect(0, 0, user.sprite.width, 10);
       lifeGraphics.endFill();
       user.life.loadTexture(lifeGraphics.generateTexture());
+      user.lifeWidth = user.sprite.width;
       
       var lifePercentage = user.health / HEROS_OPTIONS[user.heroId].baseHealth;
-      user.life.width = Math.round(user.sprite.width * lifePercentage)
+      user.life.width = Math.round(user.lifeWidth * lifePercentage)
 
       moveUser(userData.id, userData.x, userData.y);
 

@@ -109,20 +109,20 @@ module.exports = {
       mana: 5,
       skills: [
         {
-          type:'melle',
-          damage: 0.5,
-          radius: 100, // radius from hit
+          type: 'melee',
+          damage: 20,
+          radius: 200 // radius from hit
         },
         {
-          type:'range',
-          damage:2,
-          shotSpeed:15,
-          shotRange:500  ,
-          radius: 200, // radius from hit
+          type: 'range',
+          damage: 2,
+          shotSpeed: 15,
+          shotRange: 500,
+          radius: 50 // radius from hit
         },
         {
-          type:'melle',
-          damage: 1,
+          type:'melee',
+          damage: 25,
           radius: 200 // radius from hit
         }
       ]
@@ -136,15 +136,15 @@ module.exports = {
         {
           type:'range',
           damage: 15,
-          shotSpeed:15,
-          shotRange:500,
+          shotSpeed: 15,
+          shotRange: 500,
           radius: 50
         },
         {
           type:'range',
           damage: 15,
-          shotSpeed:15,
-          shotRange:500,
+          shotSpeed: 15,
+          shotRange: 500,
           radius: 50
         }
       ],

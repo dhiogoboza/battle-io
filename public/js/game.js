@@ -180,6 +180,10 @@ window.onload = function () {
       game.load.image('skill1', 'img/skill1.png');
       game.load.image('skill2', 'img/skill2.png');
       game.load.image('skilln', 'img/skilln.png');
+      game.load.image('z', 'img/z.png');
+      game.load.image('x', 'img/x.png');
+      game.load.image('c', 'img/c.png');
+      game.load.image('hud', 'img/hub.png');
 
       // Initialize sprites
       var spriteId, spritePath;
@@ -508,14 +512,23 @@ window.onload = function () {
     
       background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
       //interface //aki
+      hud = game.add.sprite(0,560,'hud');
+      hud.fixedToCamera=true;
       avatar = game.add.sprite(0,570,'avatar');
       avatar.fixedToCamera=true;
+      avatar.bringToTop();
       skill0 = game.add.sprite(110,570,'skill0');
       skill0.fixedToCamera=true;
       skill1 = game.add.sprite(170,570,'skill1');
       skill1.fixedToCamera=true;
       skill2 = game.add.sprite(230,570,'skill2');
       skill2.fixedToCamera=true;
+      z = game.add.sprite(110,620,'z');
+      z.fixedToCamera=true;
+      x = game.add.sprite(170,620,'x');
+      x.fixedToCamera=true;
+      c = game.add.sprite(230,620,'c');
+      c.fixedToCamera=true;
       /*
       if(player.score>9){
         skill0 = game.add.sprite(110,600,'skill0');

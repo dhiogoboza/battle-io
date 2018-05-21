@@ -575,9 +575,12 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
         if (affectedPlayer.health <= 0) {
           affectedPlayer.health = 0;
           // kill player
-          self.util.removeByVal(playerIds, affectedPlayer.id);
-          delete players[affectedPlayer.id];
+          //self.util.removeByVal(playerIds, affectedPlayer.id);
+          //delete players[affectedPlayer.id];
+          self.options.stateManager.delete(affectedPlayer);
         }
+        
+        self.hitManager.removeHit(hit.id);
       }
     }
     

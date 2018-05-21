@@ -48,7 +48,7 @@ module.exports = {
 
   // Note that the number of bots needs to be either 0 or a multiple of the number of
   // worker processes or else it will get rounded up/down.
-  BOT_COUNT: 2,
+  BOT_COUNT: 10,
   BOT_MOVE_SPEED: 5,
   BOT_MASS: 10,
   BOT_DEFAULT_DIAMETER: 45,
@@ -61,26 +61,26 @@ module.exports = {
   // The probabilities need to add up to 1.
   COIN_TYPES: [
     {
-      type: 4,
-      value: 1,
+      type: 4,//orb4
+      value:20,
       radius: 10,
       probability: 0.25
     },
     {
       type: 3,
-      value: 2,
+      value: 10,//orb3
       radius: 10,
       probability: 0.6
     },
     {
       type: 2,
-      value: 6,
+      value: 30,//orb2
       radius: 10,
       probability: 0.1
     },
     {
       type: 1,
-      value: 12,
+      value: 30,//orb1
       radius: 10,
       probability: 0.05
     }
@@ -97,24 +97,33 @@ module.exports = {
   HEROS_OPTIONS: [
     { // 0 bot
       baseHealth: 100,
+      mana: 5,
       radius: 10, // radius from hit
       diameter: 100,
       mass: 20
     },
     { // hero 1
       baseHealth: 100,
-      radius: 10, // radius from hit
       diameter: 100,
       mass: 20,
+      mana: 5,
       skills: [
         {
           type:'melle',
-          damage: 15
+          damage: 0.5,
+          radius: 100, // radius from hit
         },
         {
           type:'range',
+          damage:2,
           shotSpeed:15,
-          shotRange:500  
+          shotRange:500  ,
+          radius: 200, // radius from hit
+        },
+        {
+          type:'melle',
+          damage: 1,
+          radius: 200 // radius from hit
         }
       ]
 
@@ -122,6 +131,7 @@ module.exports = {
     { // hero 2
       baseHealth: 100,
       radius: 5, // radius from hit
+      mana: 5,
       skills: [
         {
           type:'range',
@@ -131,6 +141,7 @@ module.exports = {
         },
         {
           type:'range',
+          damage: 15,
           shotSpeed:15,
           shotRange:500  
         }

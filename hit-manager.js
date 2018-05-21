@@ -35,13 +35,13 @@ HitManager.prototype.addHit = function (player,skillIndex) {
     step: 0,
     x: position.x,
     y: position.y,
-    r: heroConfig.radius
+    r: hitConfig.radius
   };
   
   if (hit.subtype == "range") {
     hit.startX = hit.x;
     hit.startY = hit.y;
-    hit.direction = player.direction.substring(0, player.direction.length - 1);
+    hit.direction = player.directionSave.substring(0, player.directionSave.length - 1);
     hit.speed = hitConfig.shotSpeed;
     hit.range = hitConfig.shotRange;
   }
@@ -69,5 +69,7 @@ HitManager.prototype.doesPlayerTouchHit = function (hitId, player) {
   var hitCircle = new SAT.Circle(new SAT.Vector(hit.x, hit.y), hit.radius);
   return SAT.testCircleCircle(playerCircle, hitCircle);
 };
+
+
 
 module.exports.HitManager = HitManager;

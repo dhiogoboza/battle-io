@@ -722,6 +722,7 @@ module.exports.run = function (worker) {
         walkerStep: 1,
         iddle: 0,
         direction: "down1",
+        directionSave:'down1',
         x: startingPos.x,
         y: startingPos.y,
         diam: heroConfig.diameter,
@@ -729,7 +730,7 @@ module.exports.run = function (worker) {
         score: 0
       };
       
-      console.log(playerOptions.heroId)
+      
 
       socket.player = stateManager.create(player);
 

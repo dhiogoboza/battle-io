@@ -253,7 +253,7 @@ CellController.prototype.keepPlayerOnGrid = function (player) {
     player.y = config.WORLD_HEIGHT - radius;
   }
 };
-var delay=5;
+var delay =5;
 CellController.prototype.applyPlayerOps = function (playerIds, players, coins, hits) {
   var self = this;
   playerIds.forEach(function (playerId) {
@@ -275,10 +275,10 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       var movementVector = {x: 0, y: 0};
       var movedHorizontally = false;
       var movedVertically = false;
-      //var attack = false;
+      var direction = player.direction;
 
       if (playerOp.u) {
-        delay=5;
+        delay = 5;
         movementVector.y = -moveSpeed;
         player.direction = 'up' + player.walkerStep;
         player.directionSave='up1';
@@ -286,7 +286,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.d) {
-        delay=5;
+        delay = 5;
         movementVector.y = moveSpeed;
         player.direction = 'down' + player.walkerStep;
         player.directionSave='down1';
@@ -294,7 +294,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.r) {
-        delay=5;
+        delay = 5;
         movementVector.x = moveSpeed;
         player.direction = 'right' + player.walkerStep;
         player.directionSave='right1';
@@ -302,15 +302,16 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       if (playerOp.l) {
-        delay=5;
+        delay = 5;
         movementVector.x = -moveSpeed;
         player.direction = 'left' + player.walkerStep;
         player.directionSave='left1';
         movedHorizontally = true;
       }
-      //attack basico
+      
+      // Basic attack
       if (playerOp.a && player.lastAttackDelay === 0) {
-        delay=5;
+        delay =5;
         var hit = self.hitManager.addHit(player,0);
         if (hit) {
           hits[hit.id] = hit;
@@ -318,10 +319,11 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
           player.lastAttackDelay = -10;
         }
       }
+      
       //skill 1
       if (playerOp.s1 && player.lastAttackDelay === 0 && player.score>=10) {
-        delay=5;
-        player.score=player.score-10;
+        delay =5;
+        player.score = player.score-10;
         var hit = self.hitManager.addHit(player,1);
         if (hit) {
           hits[hit.id] = hit;
@@ -329,45 +331,47 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
           player.lastAttackDelay = -10;
         }
       }
+      
       //skill2
-      if(playerOp.s2 && player.lastAttackDelay === 0 && player.score>1 && delay%5==0){
-        delay=5;
-        player.score=player.score-0.3;
+      if (playerOp.s2 && player.lastAttackDelay === 0 && player.score>1 && delay%5==0) {
+        delay = 5;
+        player.score = player.score-0.3;
         var d = player.direction.substring(0, player.direction.length - 1);
-        if (d=='up') {
+        
+        if (d == 'up') {
           movementVector.y = - (3*moveSpeed);
           player.direction = 'dashup'+ player.walkerStep;
           player.directionSave = 'up1';
           movedVertically = true;
         }
       
-        if (d==='down') {
+        if (d === 'down') {
           movementVector.y = (3*moveSpeed);
-          player.direction = 'dashdown'+ player.walkerStep;
+          player.direction = 'dashdown' + player.walkerStep;
           player.directionSave = 'down1';
           movedVertically = true;
-          for(var i=0;i<1000;i++){for(var j=0;j<1000;j++){}}
         }
       
-        if (d==='right') {
+        if (d === 'right') {
           movementVector.x = (3*moveSpeed);
-          player.direction = 'dashright'+ player.walkerStep;
+          player.direction = 'dashright' + player.walkerStep;
           player.directionSave = 'right1';
           movedHorizontally = true;
         }
       
         if (d==='left') {
-          movementVector.x = -(3*moveSpeed);
-          player.direction = 'dashleft'+ player.walkerStep;
+          movementVector.x = -(3 * moveSpeed);
+          player.direction = 'dashleft' + player.walkerStep;
           player.directionSave = 'left1';
           movedHorizontally = true;
         }
       }
+      
       //skill3
-      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score>=100 && delay%5==0) {
-        delay=5;
-        player.score=player.score-100;
-        var hit = self.hitManager.addHit(player,2);
+      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 100 && delay%5 == 0) {
+        delay = 5;
+        player.score = player.score-100;
+        var hit = self.hitManager.addHit(player, 2);
         if (hit) {
           hits[hit.id] = hit;
           player.auxAttackStep = 13;
@@ -375,7 +379,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
         }
       }
       if (movedHorizontally || movedVertically) {
-        delay=5;
+        delay = 5;
         if (player.walkerStep < 4) {
           player.walkerStep++;
         } else {
@@ -384,7 +388,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
 
       if (movedHorizontally && movedVertically) {
-        delay=5;
+        delay = 5;
         movementVector.x *= self.diagonalSpeedFactor;
         movementVector.y *= self.diagonalSpeedFactor;
       }
@@ -433,18 +437,18 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
     if (player.coinOverlaps) {
       player.coinOverlaps.forEach(function (coin) {
         if (self.testCircleCollision(player, coin).collided) {
-          if(coins[coin.id].t == 2 ){
+          if (coins[coin.id].t == 2 ) {
             player.health += coin.v;
-            if(player.health>100){
+            if (player.health>100) {
               player.health=100;
             }
           }
-          if(coins[coin.id].t == 4){
+          if (coins[coin.id].t == 4) {
               player.health-=10;
           }
           else{
             player.score += coin.v;
-            if(player.score>100){
+            if (player.score>100) {
               player.score=100;
             }
           }

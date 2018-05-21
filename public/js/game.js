@@ -204,7 +204,7 @@ window.onload = function () {
           }
           
           // Shots
-          if (HEROS_OPTIONS[i].hit == "range") {
+          if (HEROS_OPTIONS[i].hit == "range" && !sprites[j].includes("dash")) {
             spriteId = i + '-shot' + sprites[j];
             spritePath = "heros/" + i + "/shots/" + sprites[j];
             game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
@@ -220,10 +220,6 @@ window.onload = function () {
     function handleCellData(stateList) {
       stateList.forEach(function (state) {
         if (state.type == 'player') {
-          if (state.id == playerId){
-            console.log(state.health);
-          }
-          
           updateUser(state);
         } else if (state.type == 'coin') {
           if (state.delete) {

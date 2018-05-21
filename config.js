@@ -110,12 +110,12 @@ module.exports = {
       skills: [
         {
           type: 'melee',
-          damage: 20,
+          damage: 10,
           radius: 200 // radius from hit
         },
         {
           type: 'range',
-          damage: 2,
+          damage: 30,
           shotSpeed: 15,
           shotRange: 500,
           radius: 50 // radius from hit

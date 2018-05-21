@@ -205,6 +205,11 @@ window.onload = function () {
             spriteId = i + '-hit' + sprites[j] + k;
             spritePath = "heros/" + i + "/hits/" + sprites[j] + k;
             game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
+            
+            // Ultimates
+            spriteId = i + '-hit' + sprites[j] + k;
+            spritePath = "heros/" + i + "/hits/" + sprites[j] + k;
+            game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
           }
           
           // Shots
@@ -355,6 +360,7 @@ window.onload = function () {
 
       if (userData.id == playerId) {
         player = user;
+        player.lastMana = -1;
         game.camera.setSize(window.innerWidth, window.innerHeight);
         game.camera.follow(user.sprite, null, CAMERA_SMOOTHING, CAMERA_SMOOTHING);
       }
@@ -446,7 +452,7 @@ window.onload = function () {
               hit = hitData;
               shots[hitData.id] = hit;
               hit.sprite = createTexturedSprite({
-                texture: users[hitData.playerId].heroId +  "-shot" + hit.direction//aki o erro que nao renderiza shot do player 2
+                texture: users[hitData.playerId].heroId +  "-shot" + hit.direction
               });
               hit.sprite.x = hitData.x;
               hit.sprite.y = hitData.y;
@@ -511,44 +517,25 @@ window.onload = function () {
       }
     
       background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
-      //interface //aki
+      //interface 
+      // FIXME: Put objects according with screen size  
       hud = game.add.sprite(0,560,'hud');
       hud.fixedToCamera=true;
-      avatar = game.add.sprite(0,570,'avatar');
+      avatar = game.add.sprite(0,560,'avatar');
       avatar.fixedToCamera=true;
-      avatar.bringToTop();
-      skill0 = game.add.sprite(110,570,'skill0');
+      skill0 = game.add.sprite(110,600,'skill0');
       skill0.fixedToCamera=true;
-      skill1 = game.add.sprite(170,570,'skill1');
+      
+      skill1 = game.add.sprite(170,600,'skill1');
+      //skill1.z=2;
       skill1.fixedToCamera=true;
-      skill2 = game.add.sprite(230,570,'skill2');
+      skill2 = game.add.sprite(230,600,'skill2');
       skill2.fixedToCamera=true;
-      z = game.add.sprite(110,620,'z');
-      z.fixedToCamera=true;
-      x = game.add.sprite(170,620,'x');
-      x.fixedToCamera=true;
-      c = game.add.sprite(230,620,'c');
-      c.fixedToCamera=true;
-      /*
-      if(player.score>9){
-        skill0 = game.add.sprite(110,600,'skill0');
-        skill0.fixedToCamera=true;
-        skill1 = game.add.sprite(170,600,'skill1');
-        skill1.fixedToCamera=true;
-        skill2 = game.add.sprite(230,600,'skill2');
-        skill2.fixedToCamera=true;
-      }
-      if(player.score>2){
-        skill1 = game.add.sprite(170,600,'skilln');
-        skill1.fixedToCamera=true;
-        skill2 = game.add.sprite(230,600,'skill2');
-        skill2.fixedToCamera=true;
-      }else{
-        skill1 = game.add.sprite(170,600,'skilln');
-        skill1.fixedToCamera=true;
-        skill2 = game.add.sprite(230,600,'skilln');
-        skill2.fixedToCamera=true;
-      }*/
+      
+      skill1 = game.add.sprite(170,600,'skilln');
+      skill1.fixedToCamera=true;
+      skill2 = game.add.sprite(230,600,'skilln');
+      skill2.fixedToCamera=true;
       
       game.time.advancedTiming = true;
       
@@ -633,13 +620,28 @@ window.onload = function () {
 
     function render() {
       var now = Date.now();
-
+      
       if (ENVIRONMENT == 'dev') {
         game.debug.text('FPS:   ' + game.time.fps, 2, 14, "#00FF00");
         if (player) {
           game.debug.text('Mana: ' + player.score.toFixed(0) +' % ', 2, 30, "#00FF00");
           game.debug.text('hp :   ' + player.health, 2, 45, "#00FF00");
-
+          // FIXME: change score to mana 
+          // TODO: Generalize mana costs
+          // FIXME: Put objects according with screen size  
+          if(player.score !== player.lastMana){
+            if(player.score>9){
+              skill1.visible = false;
+              skill2.visible = false;
+            } else if (player.score>0){
+              skill1.visible = true;
+              skill2.visible = false;
+            }else{
+              skill1.visible = true;
+              skill2.visible = true;
+            }
+            player.lastMana = player.score;
+          }
         }
       }
 

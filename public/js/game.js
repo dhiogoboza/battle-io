@@ -24,27 +24,72 @@ window.onload = function () {
     var HEROS_OPTIONS = [
       { // 0 bot
         baseHealth: 100,
-        hit: "melee",
+        mana: 5,
         radius: 10, // radius from hit
-        damage: 5,
-        diameter: 100,
-        mass: 20
+        diameter: 50,
+        mass: 20,
+        skills: []
       },
       { // hero 1
         baseHealth: 100,
-        hit: "range",
-        radius: 10, // radius from hit
-        damage: 5,
         diameter: 100,
-        mass: 20
+        mass: 20,
+        mana: 5,
+        skills: [
+          {
+            type: 'melee',
+            damage: 10,
+            radius: 200 // radius from hit
+          },
+          {
+            type: 'range',
+            damage: 30,
+            shotSpeed: 15,
+            shotRange: 500,
+            radius: 50 // radius from hit
+          },
+          {
+            type:'melee' // FIXME: dash
+          },
+          {
+            type:'melee',
+            damage: 25,
+            radius: 200 // radius from hit
+          }
+        ]
+
       },
       { // hero 2
         baseHealth: 100,
-        hit: "range",
-        radius: 10, // radius from hit
-        damage: 5,
+        radius: 5, // radius from hit
+        mana: 5,
+        skills: [
+          {
+            type:'range',
+            damage: 15,
+            shotSpeed: 15,
+            shotRange: 500,
+            radius: 50
+          },
+          {
+            type:'range',
+            damage: 15,
+            shotSpeed: 15,
+            shotRange: 500,
+            radius: 50
+          },
+          {
+            type:'melee' // FIXME: dash
+          },
+          {
+            type:'melee',
+            damage: 25,
+            radius: 200 // radius from hit
+          }
+        ],
         diameter: 100,
         mass: 20
+          
       }
     ];
     
@@ -192,31 +237,41 @@ window.onload = function () {
       game.load.image('hud', 'img/hub.png');
 
       // Initialize sprites
-      var spriteId, spritePath;
-      var sprites = ["left","right","up", "down","dashdown","dashup","dashleft","dashright"];
+      var spriteId, spritePath, currentHero;
+      var sprites = ["left","right","up", "down"];
       for (var i = 0; i < HEROS_OPTIONS.length; i++) {
+        currentHero = HEROS_OPTIONS[i];
+        
         for (var j = 0; j < sprites.length; j++) {
           for (var k = 1; k < 5; k++) {
             spriteId = i + '-' + sprites[j] + k;
             spritePath = "heros/" + i + "/" + sprites[j] + k;
-            game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
-
-            // Hits 
-            spriteId = i + '-hit' + sprites[j] + k;
-            spritePath = "heros/" + i + "/hits/" + sprites[j] + k;
-            game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
-            
-            // Ultimates
-            spriteId = i + '-hit' + sprites[j] + k;
-            spritePath = "heros/" + i + "/hits/" + sprites[j] + k;
+            if (i == 1) {
+              console.log(spriteId);
+            }
             game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
           }
           
-          // Shots
-          if (HEROS_OPTIONS[i].hit == "range" && !sprites[j].includes("dash")) {
-            spriteId = i + '-shot' + sprites[j];
-            spritePath = "heros/" + i + "/shots/" + sprites[j];
-            game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
+          // Iterate over hero skills
+          for (var k = 0; k < currentHero.skills.length; k++) {
+            for (var l = 1; l < 5; l++) {
+              // Hits
+              spriteId = i + '-hit' + k + sprites[j] + l;
+              spritePath = "heros/" + i + "/hits/" + k + "/" + sprites[j] + l;
+              if (i == 1) {
+                console.log(spriteId);
+              }
+              game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
+            }
+            
+            if (currentHero.skills[k].type == "range") {
+              spriteId = i + '-shot' + k + sprites[j];
+              spritePath = "heros/" + i + "/shots/" + k + "/" + sprites[j];
+              if (i == 1) {
+                console.log(spriteId);
+              }
+              game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
+            }
           }
         }
       }
@@ -229,7 +284,7 @@ window.onload = function () {
     function handleCellData(stateList) {
       stateList.forEach(function (state) {
         if (state.type == 'player') {
-          updateUser(state);
+            updateUser(state);
         } else if (state.type == 'coin') {
           if (state.delete) {
             removeCoin(state);
@@ -271,7 +326,7 @@ window.onload = function () {
       var sprite;
       if (user.attackStep > 0) {
         // FIXME: do not split strings
-        sprite = user.heroId + "-hit" + user.direction.substring(0, user.direction.length - 1) + user.attackStep;
+        sprite = user.heroId + "-hit" + user.currentSkill + user.direction.substring(0, user.direction.length - 1) + user.attackStep;
       } else {
         sprite = user.heroId + "-" + user.direction;
       }
@@ -320,6 +375,7 @@ window.onload = function () {
       user.name = userData.name;
       user.heroId = userData.heroId;
       user.attackStep = userData.attackStep || 0;
+      user.currentSkill = userData.currentSkill || "";
       user.direction = "down1";
       user.health = userData.health;
       user.lastHealth = user.health;
@@ -395,6 +451,7 @@ window.onload = function () {
         user.direction = userData.direction;
         user.heroId = userData.heroId;
         user.attackStep = userData.attackStep;
+        user.currentSkill = userData.currentSkill;
         user.health = userData.health;
 
         moveUser(userData.id, userData.x, userData.y);
@@ -452,7 +509,7 @@ window.onload = function () {
               hit = hitData;
               shots[hitData.id] = hit;
               hit.sprite = createTexturedSprite({
-                texture: users[hitData.playerId].heroId +  "-shot" + hit.direction
+                texture: users[hitData.playerId].heroId +  "-shot" + hit.skillIndex + hit.direction
               });
               hit.sprite.x = hitData.x;
               hit.sprite.y = hitData.y;

@@ -99,7 +99,7 @@ module.exports = {
       baseHealth: 100,
       mana: 5,
       radius: 10, // radius from hit
-      diameter: 100,
+      diameter: 50,
       mass: 20
     },
     { // hero 1
@@ -119,6 +119,9 @@ module.exports = {
           shotSpeed: 15,
           shotRange: 500,
           radius: 50 // radius from hit
+        },
+        {
+          type:'melee' // FIXME: dash
         },
         {
           type:'melee',
@@ -146,6 +149,14 @@ module.exports = {
           shotSpeed: 15,
           shotRange: 500,
           radius: 50
+        },
+        {
+          type:'melee' // FIXME: dash
+        },
+        {
+          type:'melee',
+          damage: 25,
+          radius: 200 // radius from hit
         }
       ],
       diameter: 100,
@@ -170,6 +181,7 @@ var privateProps = {
   external: true,
   iddle: true,
   auxAttackStep: true,
+  auxWalkerStep: true,
   lastAttackDelay: true
 };
 

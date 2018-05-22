@@ -312,7 +312,8 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       // Basic attack
       if (playerOp.a && player.lastAttackDelay === 0) {
         player.delay = 5;
-        var hit = self.hitManager.addHit(player,0);
+        player.currentSkill = "0";
+        var hit = self.hitManager.addHit(player);
         if (hit) {
           hits[hit.id] = hit;
           player.auxAttackStep = 13;
@@ -323,8 +324,9 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       //skill 1
       if (playerOp.s1 && player.lastAttackDelay === 0 && player.score >= 10) {
         player.delay = 5;
+        player.currentSkill = "1";
         player.score = player.score-10;
-        var hit = self.hitManager.addHit(player,1);
+        var hit = self.hitManager.addHit(player);
         if (hit) {
           hits[hit.id] = hit;
           player.auxAttackStep = 13;
@@ -335,33 +337,34 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       //skill2
       if (playerOp.s2 && player.lastAttackDelay === 0 && player.score > 0 && player.delay % 5 == 0) {
         player.delay = 5;
+        player.currentSkill = "2";
         player.score = player.score-0.3;
         var d = player.direction.substring(0, player.direction.length - 1);
         
         if (d == 'up') {
           movementVector.y = - (3 * moveSpeed);
-          player.direction = 'dashup'+ player.walkerStep;
+          player.direction = 'hit2up'+ player.walkerStep;
           player.directionSave = 'up1';
           movedVertically = true;
         }
       
         if (d === 'down') {
           movementVector.y = (3 * moveSpeed);
-          player.direction = 'dashdown' + player.walkerStep;
+          player.direction = 'hit2down' + player.walkerStep;
           player.directionSave = 'down1';
           movedVertically = true;
         }
       
         if (d === 'right') {
           movementVector.x = (3 * moveSpeed);
-          player.direction = 'dashright' + player.walkerStep;
+          player.direction = 'hit2right' + player.walkerStep;
           player.directionSave = 'right1';
           movedHorizontally = true;
         }
       
         if (d==='left') {
           movementVector.x = -(3 * moveSpeed);
-          player.direction = 'dashleft' + player.walkerStep;
+          player.direction = 'hit2left' + player.walkerStep;
           player.directionSave = 'left1';
           movedHorizontally = true;
         }
@@ -370,8 +373,9 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       //skill3
       if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 100 && player.delay % 5 == 0) {
         player.delay = 5;
+        player.currentSkill = "3";
         player.score = player.score-100;
-        var hit = self.hitManager.addHit(player, 2);
+        var hit = self.hitManager.addHit(player);
         if (hit) {
           hits[hit.id] = hit;
           player.auxAttackStep = 13;
@@ -380,9 +384,11 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       if (movedHorizontally || movedVertically) {
         player.delay = 5;
-        if (player.walkerStep < 4) {
-          player.walkerStep++;
+        if (player.auxWalkerStep < 20) {
+          player.auxWalkerStep++;
+          player.walkerStep = parseInt(player.auxWalkerStep / 5);
         } else {
+          player.auxWalkerStep = 5;
           player.walkerStep = 1;
         }
       }
@@ -401,11 +407,11 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       player.delay--;
     } else {
       // Reset player walking state
-      player.direction = player.directionSave;
       if (player.iddle < 10) {
         player.iddle++;
       } else if (player.iddle === 10) {
-        if (player.walkerStep !== 1) {
+        if (player.auxWalkerStep !== 5) {
+          player.auxWalkerStep = 5;
           player.walkerStep = 1;
           player.direction = player.direction.substring(0, player.direction.length - 1) + "1";
         }
@@ -585,7 +591,7 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
           if (affectedPlayer.subtype != "bot") {
             self.options.stateManager.delete(affectedPlayer);
           } else {
-            self.botManager.removeBot(affectedPlayer.id);
+            self.botManager.removeBot(affectedPlayer);
           }
         }
         

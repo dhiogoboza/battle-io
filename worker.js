@@ -720,6 +720,8 @@ module.exports.run = function (worker) {
         health: heroConfig.baseHealth,
         attackStep: -1,
         auxAttackStep: -1,
+        auxWalkerStep: 10,
+        currentSkill: "",
         walkerStep: 1,
         delay: 5,
         iddle: 0,

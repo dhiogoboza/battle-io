@@ -21,17 +21,17 @@ var HitManager = function (options) {
   this.hitCount = 0;
 };
 
-HitManager.prototype.addHit = function (player,skillIndex) {
+HitManager.prototype.addHit = function (player) {
   var heroConfig = config.HEROS_OPTIONS[player.heroId];
   var hitId = heroConfig.hit === "melee" ? "hit-" + player.id : uuid.v4();
   var position = new SAT.Vector(player.x, player.y);
-  var hitConfig = heroConfig.skills[skillIndex];
+  var hitConfig = heroConfig.skills[parseInt(player.currentSkill)];
   var hit = {
     id: hitId,
     type: 'hit',
     playerId: player.id,
     subtype: hitConfig.type,
-    skillIndex: skillIndex,
+    skillIndex: player.currentSkill,
     damage: hitConfig.damage,
     step: 0,
     x: position.x,

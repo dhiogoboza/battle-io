@@ -62,25 +62,25 @@ module.exports = {
   COIN_TYPES: [
     {
       type: 4,//orb4
-      value:20,
+      value:1120,
       radius: 10,
       probability: 0.25
     },
     {
       type: 3,
-      value: 10,//orb3
+      value: 101,//orb3
       radius: 10,
       probability: 0.6
     },
     {
       type: 2,
-      value: 30,//orb2
+      value: 130,//orb2
       radius: 10,
       probability: 0.1
     },
     {
       type: 1,
-      value: 30,//orb1
+      value: 130,//orb1
       radius: 10,
       probability: 0.05
     }
@@ -110,12 +110,12 @@ module.exports = {
       skills: [
         {
           type: 'melee',
-          damage: 20,
+          damage: 10,
           radius: 200 // radius from hit
         },
         {
           type: 'range',
-          damage: 2,
+          damage: 30,
           shotSpeed: 15,
           shotRange: 500,
           radius: 50 // radius from hit

@@ -333,7 +333,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       //skill2
-      if (playerOp.s2 && player.lastAttackDelay === 0 && player.score > 1 && player.delay % 5 == 0) {
+      if (playerOp.s2 && player.lastAttackDelay === 0 && player.score > 0 && player.delay % 5 == 0) {
         player.delay = 5;
         player.score = player.score-0.3;
         var d = player.direction.substring(0, player.direction.length - 1);
@@ -516,12 +516,10 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
     if (!player) {
       //TODO: if player not found remove hit
     } else {
-      console.log(hit.subtype)
       switch (hit.subtype) {
         case "melee":
           // FIXME: do not split string
           var d = player.direction.substring(0, player.direction.length - 1);
-          console.log(d);
           var player_r = Math.round(player.diam / 2);
           switch (d) {
             case "down":
@@ -573,10 +571,6 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
       var hitList = playerTree.search(hitHitArea);
       playerTree.insert(player.hitArea);
       
-      console.log("radius: " + hit.r);
-      console.log("     x: " + hit.x);
-      console.log("     y: " + hit.y);
-      console.log("hitList: " + hitList.length);
       
       if (hitList.length) {
         var randomIndex = Math.floor(Math.random() * hitList.length);

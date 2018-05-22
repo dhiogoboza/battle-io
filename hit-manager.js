@@ -31,6 +31,7 @@ HitManager.prototype.addHit = function (player,skillIndex) {
     type: 'hit',
     playerId: player.id,
     subtype: hitConfig.type,
+    skillIndex: skillIndex,
     damage: hitConfig.damage,
     step: 0,
     x: position.x,

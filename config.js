@@ -111,7 +111,7 @@ module.exports = {
         {
           type: 'melee',
           damage: 10,
-          radius: 200 // radius from hit
+          radius: 100 // radius from hit
         },
         {
           type: 'range',
@@ -125,8 +125,8 @@ module.exports = {
         },
         {
           type:'melee',
-          damage: 25,
-          radius: 200 // radius from hit
+          damage: 70,
+          radius: 400 // radius from hit
         }
       ]
 
@@ -138,24 +138,24 @@ module.exports = {
       skills: [
         {
           type:'range',
-          damage: 15,
+          damage: 10,
           shotSpeed: 15,
           shotRange: 500,
           radius: 50
         },
         {
           type:'range',
-          damage: 15,
-          shotSpeed: 15,
+          damage: 35,
+          shotSpeed: 25,
           shotRange: 500,
-          radius: 50
+          radius: 100
         },
         {
           type:'melee' // FIXME: dash
         },
         {
           type:'melee',
-          damage: 25,
+          damage: 70,
           radius: 200 // radius from hit
         }
       ],

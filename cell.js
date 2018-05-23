@@ -371,10 +371,10 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       //skill3
-      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 100 && player.delay % 5 == 0) {
+      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 50 && player.delay % 5 == 0) {
         player.delay = 5;
         player.currentSkill = "3";
-        player.score = player.score-100;
+        player.score = player.score-50;
         var hit = self.hitManager.addHit(player);
         if (hit) {
           hits[hit.id] = hit;

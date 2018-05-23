@@ -203,7 +203,7 @@ CellController.prototype.dropCoins = function (coins) {
         'Check that probabilities add up to 1 in COIN_TYPES config option.');
     }
 
-    var coin = this.coinManager.addCoin(chosenCoinType.value, chosenCoinType.type, chosenCoinType.radius);
+    var coin = this.coinManager.addCoin(chosenCoinType);
     if (coin) {
       coins[coin.id] = coin;
     }
@@ -338,7 +338,7 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       if (playerOp.s2 && player.lastAttackDelay === 0 && player.score > 0 && player.delay % 5 == 0) {
         player.delay = 5;
         player.currentSkill = "2";
-        player.score = player.score-0.3;
+        player.score = player.score - 1;
         var d = player.direction.substring(0, player.direction.length - 1);
         
         if (d == 'up') {
@@ -371,17 +371,18 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
       }
       
       //skill3
-      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 50 && player.delay % 5 == 0) {
+      if (playerOp.s3 && player.lastAttackDelay === 0 && player.score >= 50) {
         player.delay = 5;
         player.currentSkill = "3";
-        player.score = player.score-50;
+        player.score = player.score - 20;
         var hit = self.hitManager.addHit(player);
         if (hit) {
           hits[hit.id] = hit;
           player.auxAttackStep = 13;
-          player.lastAttackDelay = -100;
+          player.lastAttackDelay = -10;
         }
       }
+      
       if (movedHorizontally || movedVertically) {
         player.delay = 5;
         if (player.auxWalkerStep < 20) {
@@ -443,21 +444,18 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins, h
     if (player.coinOverlaps) {
       player.coinOverlaps.forEach(function (coin) {
         if (self.testCircleCollision(player, coin).collided) {
-          if (coins[coin.id].t == 2 ) {
+          if (coins[coin.id].t == 2 || coins[coin.id].t == 4) {
             player.health += coin.v;
-            if (player.health>100) {
+            if (player.health > 100) {
               player.health=100;
             }
-          }
-          if (coins[coin.id].t == 4) {
-              player.health-=10;
-          }
-          else{
+          } else {
             player.score += coin.v;
-            if (player.score>100) {
+            if (player.score > 100) {
               player.score=100;
             }
           }
+          
           self.coinManager.removeCoin(coin.id);
         }
       });

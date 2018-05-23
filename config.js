@@ -61,28 +61,32 @@ module.exports = {
   // The probabilities need to add up to 1.
   COIN_TYPES: [
     {
-      type: 4,//orb4
-      value:1120,
+      type: 0,
+      value: -10, //orb1
       radius: 10,
-      probability: 0.25
-    },
-    {
-      type: 3,
-      value: 101,//orb3
-      radius: 10,
-      probability: 0.6
-    },
-    {
-      type: 2,
-      value: 130,//orb2
-      radius: 10,
-      probability: 0.1
+      property: "score", // FIXME: mana
+      probability: 0.05
     },
     {
       type: 1,
-      value: 130,//orb1
+      value: 20, //orb2
       radius: 10,
-      probability: 0.05
+      property: "health",
+      probability: 0.1
+    },
+    {
+      type: 2,
+      value: 20, //orb3
+      radius: 10,
+      property: "score", // FIXME: mana
+      probability: 0.6
+    },
+    {
+      type: 3, //orb4
+      value: 20,
+      radius: 10,
+      property: "health",
+      probability: 0.25
     }
   ],
 
@@ -126,7 +130,7 @@ module.exports = {
         {
           type:'melee',
           damage: 70,
-          radius: 400 // radius from hit
+          radius: 200 // radius from hit
         }
       ]
 

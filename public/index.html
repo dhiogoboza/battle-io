@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello Phaser!</title>
+    <title>Battle of Power!</title>
     <link rel="icon" type="image/png" href="/favicon.ico">
     <script type="text/javascript" src="js/socketcluster.js"></script>
     <script src="js/sc-codec-min-bin.js"></script>
@@ -13,35 +13,28 @@
     
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
   </head>
-  <style>
-      body{
-          background-image:url(img/bg.jpg);
-          background-attachment: fixed;
-          background-size: 100%;
-          background-repeat:no-repeat;
-          background-color:#000;
-          
-      }
-  </style>
   <body>
     <div>
         <div id="center-container" class="game-content">
             <div id="pre-game">
-              <h2> Escolha seu herói! </h2>
-              
-              <div class="card" data-heroId="1"style= margin-left:100px;margin-top:250px;>
-                <img src="img/sprites/heros/1/avatar.png" alt="Avatar" style="width:150px" >
-                <div class="container">
-                  <h4>KAZEMARU</h4> 
-                  <p>A fúria do vento</p> 
+              <div id="pre-game-in">
+            
+                <div>
+                  <input type="text" class="effect20" id="nickname" placeholder="Type your nickname" />
                 </div>
-              </div>
-              
-              <div class="card" data-heroId="2">
-                <img src="img/sprites/heros/2/avatar.png" alt="Avatar" style="width:150px">
-                <div class="container">
-                  <h4>Herói 2</h4> 
-                  <p>O fulano de tal</p> 
+                            
+                <div class="card" data-heroId="1">
+                  <img src="img/sprites/heros/1/avatar.png" alt="Avatar" style="width:150px" >
+                  <div class="container">
+                    <h4>KAZEMARU</h4> 
+                  </div>
+                </div>
+                
+                <div class="card" data-heroId="2">
+                  <img src="img/sprites/heros/2/avatar.png" alt="Avatar" style="width:150px">
+                  <div class="container">
+                    <h4>Herói 2</h4>
+                  </div>
                 </div>
               </div>
             </div>

@@ -60,17 +60,17 @@ CoinManager.prototype.generateRandomAvailablePosition = function (coinRadius) {
   return position;
 };
 
-CoinManager.prototype.addCoin = function (value, subtype, radius) {
-  radius = radius || COIN_DEFAULT_RADIUS;
+CoinManager.prototype.addCoin = function (coinConfig) {
   var coinId = uuid.v4();
-  var validPosition = this.generateRandomAvailablePosition(radius);
+  var validPosition = this.generateRandomAvailablePosition(coinConfig.radius);
   if (validPosition) {
     var coin = {
       id: coinId,
       type: 'coin',
-      t: subtype || 1,
-      v: value || COIN_DEFAULT_VALUE,
-      r: radius,
+      property: coinConfig.property,
+      t: coinConfig.type,
+      v: coinConfig.value,
+      r: coinConfig.radius,
       x: validPosition.x,
       y: validPosition.y
     };

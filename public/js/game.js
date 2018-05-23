@@ -11,14 +11,18 @@ window.onload = function () {
     var gameContainer = document.getElementById("game-content");
     var preGameContainer = document.getElementById("pre-game");
     var game, playerId, player, playerHeroId;
+    var w, h;
+    
     users = {};
     coins = {};
     shots = {};
     
     var textStyle = {
-      font: '16px Arial',
-      fill: '#FFFFFF',
-      align: 'center'
+      font: '16px Arial' ,
+      fill: '#FFFFFF' ,
+      align: 'center' ,
+      stroke: '#000000' ,
+      strokeThickness: 3
     };
     
     var HEROS_OPTIONS = [
@@ -37,12 +41,12 @@ window.onload = function () {
         mana: 5,
         skills: [
           {
-            type: 'melee',
+            type: 'melee' ,
             damage: 10,
             radius: 200 // radius from hit
           },
           {
-            type: 'range',
+            type: 'range' ,
             damage: 30,
             shotSpeed: 15,
             shotRange: 500,
@@ -52,7 +56,7 @@ window.onload = function () {
             type:'melee' // FIXME: dash
           },
           {
-            type:'melee',
+            type:'melee' ,
             damage: 25,
             radius: 200 // radius from hit
           }
@@ -65,14 +69,14 @@ window.onload = function () {
         mana: 5,
         skills: [
           {
-            type:'range',
+            type:'range' ,
             damage: 15,
             shotSpeed: 15,
             shotRange: 500,
             radius: 50
           },
           {
-            type:'range',
+            type:'range' ,
             damage: 15,
             shotSpeed: 15,
             shotRange: 500,
@@ -82,7 +86,7 @@ window.onload = function () {
             type:'melee' // FIXME: dash
           },
           {
-            type:'melee',
+            type:'melee' ,
             damage: 25,
             radius: 200 // radius from hit
           }
@@ -112,9 +116,9 @@ window.onload = function () {
 
     // Map the score value to the texture.
     var orbTextures = {
-      1: 'img/orb-1.png',
-      2: 'img/orb-2.png',
-      3: 'img/orb-3.png',
+      1: 'img/orb-1.png' ,
+      2: 'img/orb-2.png' ,
+      3: 'img/orb-3.png' ,
       4: 'img/orb-4.png'
     };
     
@@ -159,12 +163,12 @@ window.onload = function () {
       var cards = document.querySelectorAll(".card");
       for (var i = 0; i < cards.length; i++) {
         var current = cards[i];
-        current.addEventListener('click', clickHandler, false);
+        current.addEventListener('click' , clickHandler, false);
       }
     }
 
     function startGame() {
-      socket.emit('getWorldInfo', null, function (err, data) {
+      socket.emit('getWorldInfo' , null, function (err, data) {
         WORLD_WIDTH = data.width;
         WORLD_HEIGHT = data.height;
         WORLD_COLS = data.cols;
@@ -224,21 +228,21 @@ window.onload = function () {
         skill3: game.input.keyboard.addKey(Phaser.Keyboard.P)
       };
 
-      game.load.image('background', BACKGROUND_TEXTURE);   
+      game.load.image('background' , BACKGROUND_TEXTURE);   
         
-      game.load.audio('tema', 'music/tema.mp3');
-      game.load.audio('sword', 'music/sword1.wav');
+      game.load.audio('tema' , 'music/tema.mp3');
+      game.load.audio('sword' , 'music/sword1.wav');
       
-      game.load.image('avatar', 'img/avatar1.png');
-      game.load.image('skill0', 'img/skill0.png');
-      game.load.image('skill1', 'img/skill1.png');
-      game.load.image('skill2', 'img/skill2.png');
-      game.load.image('skill3', 'img/skill3.png');
-      game.load.image('skilln', 'img/skilln.png');
-      game.load.image('z', 'img/z.png');
-      game.load.image('x', 'img/x.png');
-      game.load.image('c', 'img/c.png');
-      game.load.image('hud', 'img/hub.png');
+      game.load.image('avatar' , 'img/avatar1.png');
+      game.load.image('skill0' , 'img/skill0.png');
+      game.load.image('skill1' , 'img/skill1.png');
+      game.load.image('skill2' , 'img/skill2.png');
+      game.load.image('skill3' , 'img/skill3.png');
+      game.load.image('skilln' , 'img/skilln.png');
+      game.load.image('z' , 'img/z.png');
+      game.load.image('x' , 'img/x.png');
+      game.load.image('c' , 'img/c.png');
+      game.load.image('hud' , 'img/hub.png');
 
       // Initialize sprites
       var spriteId, spritePath, currentHero;
@@ -276,10 +280,10 @@ window.onload = function () {
           }
         }
       }
-      game.load.image('orb-1', orbTextures[1]);
-      game.load.image('orb-2', orbTextures[2]);
-      game.load.image('orb-3', orbTextures[3]);
-      game.load.image('orb-4', orbTextures[4]);
+      game.load.image('orb-1' , orbTextures[1]);
+      game.load.image('orb-2' , orbTextures[2]);
+      game.load.image('orb-3' , orbTextures[3]);
+      game.load.image('orb-4' , orbTextures[4]);
     }
 
     function handleCellData(stateList) {
@@ -348,7 +352,7 @@ window.onload = function () {
       user.clientProcessed = Date.now();
 
       if (user.id == playerId) {
-        updateCellWatchers(user, 'cell-data', handleCellData);
+        updateCellWatchers(user, 'cell-data' , handleCellData);
       }
     }
 
@@ -564,7 +568,6 @@ window.onload = function () {
     }
     var music;
     function create() {
-      var w,h;
       sword = game.add.audio('sword');
       music = game.add.audio('tema');
       music.loopFull(0.6);
@@ -580,24 +583,24 @@ window.onload = function () {
       background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
       //interface 
       // FIXME: Put objects according with screen size 
-      hud = game.add.sprite(0,h-200,'hud');
+      hud = game.add.sprite(0, h-200, 'hud');
       hud.fixedToCamera=true;
-      avatar = game.add.sprite(60,h-180,'avatar');
+      avatar = game.add.sprite(60, h-180, 'avatar');
       avatar.fixedToCamera=true;
-      skill0 = game.add.sprite(200,h-70,'skill1');
+      skill0 = game.add.sprite(200, h-70, 'skill1');
       skill0.fixedToCamera=true;
       
-      skill1 = game.add.sprite(270,h-70,'skill2');
+      skill1 = game.add.sprite(270, h-70, 'skill2');
       skill1.z=2;
       skill1.fixedToCamera=true;
-      skill2 = game.add.sprite(340,h-70,'skill3');
+      skill2 = game.add.sprite(340, h-70, 'skill3');
       skill2.fixedToCamera=true;
       
-      skill0 = game.add.sprite(200,h-70,'skilln');
+      skill0 = game.add.sprite(200, h-70, 'skilln');
       skill0.fixedToCamera=true;
-      skill1 = game.add.sprite(270,h-70,'skilln');
+      skill1 = game.add.sprite(270, h-70, 'skilln');
       skill1.fixedToCamera=true;
-      skill2 = game.add.sprite(340,h-70,'skilln');
+      skill2 = game.add.sprite(340, h-70, 'skilln');
       skill2.fixedToCamera=true;
       
       game.time.advancedTiming = true;
@@ -608,15 +611,19 @@ window.onload = function () {
       game.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
       // Generate a random name for the user.
-      var playerName = 'user-' + Math.round(Math.random() * 10000);
+      var playerName = document.getElementById('nickname').value;
+      
+      if (playerName === "") {
+       playerName = 'user-' + Math.round(Math.random() * 10000);
+      }
 
       function joinWorld() {
-        socket.emit('join', {
+        socket.emit('join' , {
           name: playerName,
           heroId: playerHeroId
         }, function (err, playerData) {
           playerId = playerData.id;
-          updateCellWatchers(playerData, 'cell-data', handleCellData);
+          updateCellWatchers(playerData, 'cell-data' , handleCellData);
         });
       }
 
@@ -633,8 +640,8 @@ window.onload = function () {
         joinWorld();
       }
       // For reconnect
-      socket.on('connect', joinWorld);
-      socket.on('disconnect', removeAllUserSprites);
+      socket.on('connect' , joinWorld);
+      socket.on('disconnect' , removeAllUserSprites);
     }
 
     var lastActionTime = 0;
@@ -678,7 +685,7 @@ window.onload = function () {
       if (didAction && Date.now() - lastActionTime >= USER_INPUT_INTERVAL) {
         lastActionTime = Date.now();
         // Send the player operations for the server to process.
-        socket.emit('action', playerOp);
+        socket.emit('action' , playerOp);
       }
     }
 
@@ -688,8 +695,8 @@ window.onload = function () {
       if (ENVIRONMENT == 'dev') {
         game.debug.text('FPS:   ' + game.time.fps, 2, 14, "#00FF00");
         if (player) {
-          game.debug.text(player.score.toFixed(0) +'% ', 20, 565, "#00FF00");
-          game.debug.text(player.health+'%', 45, 610, "#00FF00");
+          game.debug.text(parseInt(player.score) +'% ' , 20, h - 110, "#00FF00");
+          game.debug.text(player.health+'%' , 45, h - 60, "#00FF00");
           // FIXME: change score to mana 
           // TODO: Generalize mana costs
           // FIXME: Put objects according with screen size

@@ -59,7 +59,6 @@ input[type=text], select {
     background: #38302c;
     display: inline-block;
     cursor: pointer;
-    margin-right: 10px;
     color: white;
     user-select: none;
     width: 180px;

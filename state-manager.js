@@ -21,7 +21,10 @@ StateManager.prototype.create = function (state) {
 // You can only update through operations which must be interpreted
 // by your cell controllers (cell.js).
 StateManager.prototype.update = function (stateRef, operation) {
-  this.stateRefs[stateRef.id].op = operation;
+  var ref = this.stateRefs[stateRef.id];
+  if (ref) {
+    ref.op = operation;
+  }
 };
 
 StateManager.prototype.delete = function (stateRef) {

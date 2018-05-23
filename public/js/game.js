@@ -700,21 +700,20 @@ window.onload = function () {
           // FIXME: change score to mana 
           // TODO: Generalize mana costs
           // FIXME: Put objects according with screen size
-          if(player.score !== player.lastMana){
-            if(player.score>50){
+          if (player.score !== player.lastMana) {
+            if (player.score > 19){
               skill0.visible = false;
               skill1.visible = false;
               skill2.visible = false;
-            } else if (player.score>9){
+            } else if (player.score > 9) {
               skill0.visible = false;
               skill1.visible = false;
               skill2.visible = true;
-            } else if (player.score>0){
+            } else if (player.score > 0) {
               skill0.visible = true;
               skill1.visible = false;
               skill2.visible = true;
-            }
-            else{
+            } else {
               skill0.visible = true;
               skill1.visible = true;
               skill2.visible = true;

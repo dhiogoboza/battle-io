@@ -731,7 +731,7 @@ module.exports.run = function (worker) {
         y: startingPos.y,
         diam: heroConfig.diameter,
         mass: heroConfig.mass,
-        score: 0
+        score: 100
       };
 
       socket.player = stateManager.create(player);

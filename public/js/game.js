@@ -224,12 +224,16 @@ window.onload = function () {
         skill3: game.input.keyboard.addKey(Phaser.Keyboard.P)
       };
 
-      game.load.image('background', BACKGROUND_TEXTURE);     
-      game.load.audio('music', 'music/Star Commander1.wav');
+      game.load.image('background', BACKGROUND_TEXTURE);   
+        
+      game.load.audio('tema', 'music/tema.mp3');
+      game.load.audio('sword', 'music/sword1.wav');
+      
       game.load.image('avatar', 'img/avatar1.png');
       game.load.image('skill0', 'img/skill0.png');
       game.load.image('skill1', 'img/skill1.png');
       game.load.image('skill2', 'img/skill2.png');
+      game.load.image('skill3', 'img/skill3.png');
       game.load.image('skilln', 'img/skilln.png');
       game.load.image('z', 'img/z.png');
       game.load.image('x', 'img/x.png');
@@ -267,9 +271,6 @@ window.onload = function () {
             if (currentHero.skills[k].type == "range") {
               spriteId = i + '-shot' + k + sprites[j];
               spritePath = "heros/" + i + "/shots/" + k + "/" + sprites[j];
-              if (i == 1) {
-                console.log(spriteId);
-              }
               game.load.image(spriteId, "img/sprites/" + spritePath + ".png");
             }
           }
@@ -564,7 +565,10 @@ window.onload = function () {
     var music;
     function create() {
       var w,h;
-      music = game.add.audio('music');
+      sword = game.add.audio('sword');
+      music = game.add.audio('tema');
+      music.loopFull(0.6);
+       
       if (WORLD_WIDTH < window.innerWidth && WORLD_HEIGHT < window.innerHeight) {
         w = WORLD_WIDTH;
         h = WORLD_HEIGHT;
@@ -575,23 +579,25 @@ window.onload = function () {
     
       background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
       //interface 
-      // FIXME: Put objects according with screen size  
-      hud = game.add.sprite(0,560,'hud');
+      // FIXME: Put objects according with screen size 
+      hud = game.add.sprite(0,h-200,'hud');
       hud.fixedToCamera=true;
-      avatar = game.add.sprite(0,560,'avatar');
+      avatar = game.add.sprite(60,h-180,'avatar');
       avatar.fixedToCamera=true;
-      skill0 = game.add.sprite(110,600,'skill0');
+      skill0 = game.add.sprite(200,h-70,'skill1');
       skill0.fixedToCamera=true;
       
-      skill1 = game.add.sprite(170,600,'skill1');
-      //skill1.z=2;
+      skill1 = game.add.sprite(270,h-70,'skill2');
+      skill1.z=2;
       skill1.fixedToCamera=true;
-      skill2 = game.add.sprite(230,600,'skill2');
+      skill2 = game.add.sprite(340,h-70,'skill3');
       skill2.fixedToCamera=true;
       
-      skill1 = game.add.sprite(170,600,'skilln');
+      skill0 = game.add.sprite(200,h-70,'skilln');
+      skill0.fixedToCamera=true;
+      skill1 = game.add.sprite(270,h-70,'skilln');
       skill1.fixedToCamera=true;
-      skill2 = game.add.sprite(230,600,'skilln');
+      skill2 = game.add.sprite(340,h-70,'skilln');
       skill2.fixedToCamera=true;
       
       game.time.advancedTiming = true;
@@ -653,6 +659,7 @@ window.onload = function () {
         didAction = true;
       }
       if (keys.attack.isDown || wasd.attack.isDown) {
+        sword.play();
         playerOp.a = 1;
         didAction = true;
       }
@@ -681,19 +688,27 @@ window.onload = function () {
       if (ENVIRONMENT == 'dev') {
         game.debug.text('FPS:   ' + game.time.fps, 2, 14, "#00FF00");
         if (player) {
-          game.debug.text('Mana: ' + player.score.toFixed(0) +' % ', 2, 30, "#00FF00");
-          game.debug.text('hp :   ' + player.health, 2, 45, "#00FF00");
+          game.debug.text(player.score.toFixed(0) +'% ', 20, 565, "#00FF00");
+          game.debug.text(player.health+'%', 45, 610, "#00FF00");
           // FIXME: change score to mana 
           // TODO: Generalize mana costs
-          // FIXME: Put objects according with screen size  
+          // FIXME: Put objects according with screen size
           if(player.score !== player.lastMana){
-            if(player.score>9){
+            if(player.score>50){
+              skill0.visible = false;
               skill1.visible = false;
               skill2.visible = false;
+            } else if (player.score>9){
+              skill0.visible = false;
+              skill1.visible = false;
+              skill2.visible = true;
             } else if (player.score>0){
-              skill1.visible = true;
-              skill2.visible = false;
-            }else{
+              skill0.visible = true;
+              skill1.visible = false;
+              skill2.visible = true;
+            }
+            else{
+              skill0.visible = true;
               skill1.visible = true;
               skill2.visible = true;
             }

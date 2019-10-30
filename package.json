@@ -7,7 +7,7 @@
     "express": "4.13.1",
     "lodash": "4.17.15",
     "minimist": "1.1.0",
-    "morgan": "1.7.0",
+    "morgan": "1.9.1",
     "rbush": "2.0.1",
     "sat": "0.6.0",
     "sc-cluster-broker-client": "1.x.x",
